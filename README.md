@@ -6,14 +6,18 @@
 
 ```plaintext
 ProjetoPA/  
-├──.idea/                   
-├── lib/                            
-└── src/                  
-     ├──  plano.md         ← planejamento do projeto
-     └──  main/           
-           ├──  inference/
-           ├──  model/    
-           ├──  test/    
-           └──  visitor/    
-
+ ├──.idea/                   
+ ├── lib/                            
+ |└── src/                  
+ │    ├──  plano.md         ← planejamento do projeto
+ |    └──  main/           
+ |          ├──  inference/
+ |          ├──  model/    
+ |          ├──  test/    
+ |          └──  visitor/    
+ │
+ ├── .gitattributes
+ ├── .gitignore
+ ├──  README.md
+ └──  pom.xml  
 ```
