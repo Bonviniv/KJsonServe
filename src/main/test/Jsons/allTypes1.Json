@@ -1,0 +1,31 @@
+{
+  "id": 123,
+  "nome": "Projeto A",
+  "preco": 599.99,
+  "disponivel": true,
+  "descricao": null,
+  "categoria": "TECNOLOGIA",
+  "etiquetas": ["novo", "destaque", "oferta"],
+  "avaliacao": {
+    "nota": 4.8,
+    "comentarios": 42,
+    "recomendado": true
+  },
+  "configuracoes": {
+    "idioma": "pt-BR",
+    "moeda": "BRL",
+    "regiao": "Brasil"
+  },
+  "opcoes": [
+    {
+      "codigo": 1,
+      "nome": "Básico",
+      "valor": 299.99
+    },
+    {
+      "codigo": 2,
+      "nome": "Premium",
+      "valor": 599.99
+    }
+  ]
+}

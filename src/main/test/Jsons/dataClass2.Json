@@ -1,0 +1,14 @@
+{
+  "produto": {
+    "codigo": 7890,
+    "nome": "Smartphone X Pro",
+    "preco": 1999.99,
+    "disponivel": true,
+    "caracteristicas": ["5G", "6GB RAM", "128GB"],
+    "categoria": "ELETRONICO",
+    "fornecedor": {
+      "nome": "TechStore",
+      "contato": "contato@techstore.com"
+    }
+  }
+}

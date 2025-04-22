@@ -1,0 +1,14 @@
+{
+  "usuario": {
+    "id": 1001,
+    "nome": "Maria Oliveira",
+    "email": "maria@example.com",
+    "idade": 28,
+    "ativo": true,
+    "perfil": "ADMINISTRADOR",
+    "preferencias": {
+      "notificacoes": true,
+      "tema": "escuro"
+    }
+  }
+}

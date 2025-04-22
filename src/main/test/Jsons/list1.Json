@@ -1,0 +1,7 @@
+{
+  "numeros": [1, 2, 3, 4, 5],
+  "nomes": ["Ana", "Pedro", "Maria", "João"],
+  "valores": [10.5, 20.3, 15.7, 8.9],
+  "status": [true, false, true, true],
+  "misturas": [42, "texto", true, 3.14]
+}

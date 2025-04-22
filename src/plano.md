@@ -96,7 +96,7 @@ Aguardar instruções futuras. Provavelmente alguma aplicação prática da bibl
 ---
 
 # 📁 Repositório GitHub
-[https://github.com/Bonviniv/PAprojeto](https://github.com/Bonviniv/PAprojeto)
+[https://github.com/Bonviniv/ProjetoPA](https://github.com/Bonviniv/ProjetoPA)
 
 Inclui:
 - Código fonte

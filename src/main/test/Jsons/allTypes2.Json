@@ -1,0 +1,33 @@
+{
+  "curso": {
+    "id": 987,
+    "nome": "Programação Avançada",
+    "creditos": 6,
+    "ativo": true,
+    "coordenador": null,
+    "nivel": "GRADUACAO",
+    "disciplinas": ["Algoritmos", "Estruturas de Dados", "Padrões de Projeto"],
+    "horarios": {
+      "segunda": "14:00-16:00",
+      "quarta": "14:00-16:00",
+      "sexta": "14:00-18:00"
+    },
+    "avaliacoes": [
+      {
+        "nome": "Prova 1",
+        "peso": 0.3,
+        "dataLimite": "2023-04-15"
+      },
+      {
+        "nome": "Projeto",
+        "peso": 0.5,
+        "dataLimite": "2023-06-01"
+      },
+      {
+        "nome": "Atividades",
+        "peso": 0.2,
+        "dataLimite": "2023-06-20"
+      }
+    ]
+  }
+}
