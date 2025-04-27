@@ -10,6 +10,9 @@ import model.JsonVisitor
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * Testes para JsonArray: criação, adição, filtro, mapeamento, serialização e visitor.
+ */
 class JsonArrayTest {
 
     @Test
@@ -71,7 +74,7 @@ class JsonArrayTest {
         array.add(JsonNumber(2.0))
 
         val mapped = array.map {
-            if (it is JsonNumber) JsonNumber(it.value.toDouble() * 2) else it
+            if (it is JsonNumber) JsonNumber((it.value as Number).toDouble() * 2) else it
         }
 
         assertEquals(2, mapped.size())
@@ -93,7 +96,7 @@ class JsonArrayTest {
         array.add(JsonBoolean(true))
         assertEquals("[\"teste\",42,true]", array.serialize())
 
-        array.add(JsonNull())
+        array.add(JsonNull.INSTANCE)
         assertEquals("[\"teste\",42,true,null]", array.serialize())
     }
 
@@ -105,11 +108,8 @@ class JsonArrayTest {
         val mockVisitor = object : JsonVisitor {
             var visitedArray = false
 
-            override fun visitArray(array: JsonArray) {
-                visitedArray = true
-            }
-
             override fun visitObject(obj: JsonObject) {}
+            override fun visitArray(arr: JsonArray) { visitedArray = true }
             override fun visitString(str: JsonString) {}
             override fun visitNumber(num: JsonNumber) {}
             override fun visitBoolean(bool: JsonBoolean) {}
@@ -117,7 +117,6 @@ class JsonArrayTest {
         }
 
         array.accept(mockVisitor)
-        assertTrue(mockVisitor.visitedArray)
+        assertTrue("Visitor deve visitar array", mockVisitor.visitedArray)
     }
 }
-

@@ -11,7 +11,6 @@ import model.JsonVisitor
 import org.junit.Assert.*
 import org.junit.Test
 
-
 class JsonBooleanTest {
 
     @Test

@@ -36,7 +36,13 @@ class JsonArray(private val elements: MutableList<JsonValue> = mutableListOf()) 
      * @return Quantidade de elementos no array JSON
      */
     fun size(): Int = elements.size
-    
+
+    /**
+     * Retorna uma lista com todos os elementos deste array JSON.
+     * @return List contendo os JsonValue armazenados no array
+     */
+    fun elements(): List<JsonValue> = elements.toList()
+
     /**
      * Filtra os elementos do array com base em um predicado
      * @param predicate Função que determina quais elementos serão mantidos
