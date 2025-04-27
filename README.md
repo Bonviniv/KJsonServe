@@ -17,6 +17,7 @@ Esta biblioteca oferece:
 - **Operações Funcionais**
   - `filter` e `map` em arrays (`JsonArray`).
   - `filter` em objetos (`JsonObject`).
+  - Operador `*` para interseção de objetos JSON.
 - **Visitors**
   - `ValidatorVisitor`: valida chaves únicas e não-vazias em `JsonObject`.
   - `ArrayHomogeneityVisitor`: garante que elementos não-null em cada `JsonArray` sejam do mesmo tipo.
@@ -139,6 +140,8 @@ println(inferred.serialize())
 - `fun get(key: String): JsonValue?`
 - `fun filter(predicate: (String, JsonValue) -> Boolean): JsonObject`
 - `fun serialize(): String`
+- `operator fun times(other: JsonObject): JsonObject` // Added this line
+- `fun getKeys(): Set<String>` // Added this line
 
 ### `JsonArray`
 - `fun add(value: JsonValue)`
@@ -166,6 +169,42 @@ Métodos: `visitObject`, `visitArray`, `visitString`, `visitNumber`, `visitBoole
 Execute todos os testes:
 ```bash
 mvn test
+```
+
+---
+## 📁 Project Structure
+```markdown
+ProjetoPA/
+├── src/
+│   ├── main/
+│   │   └── kotlin/
+│   │       ├── model/
+│   │       │   ├── JsonArray.kt
+│   │       │   ├── JsonBoolean.kt
+│   │       │   ├── JsonNull.kt
+│   │       │   ├── JsonNumber.kt
+│   │       │   ├── JsonObject.kt
+│   │       │   ├── JsonString.kt
+│   │       │   ├── JsonValue.kt
+│   │       │   └── JsonVisitor.kt
+│   │       ├── visitor/
+│   │       │   ├── ArrayHomogeneityVisitor.kt
+│   │       │   └── ValidatorVisitor.kt
+│   │       └── inference/
+│   │           └── JsonInfer.kt
+│   └── test/
+│       └── kotlin/
+│           └── test/
+│               ├── Jsons/
+│               │   └── (JSON test files)
+│               ├── TestsPhase1.kt
+│               ├── TestsPhase2.kt
+│               ├── JsonBooleanTests.kt
+│               ├── JsonNullTests.kt
+│               ├── JsonNumberTests.kt
+│               ├── JsonStringTests.kt
+│               └── ValidatorVisitorTests.kt
+└── pom.xml
 ```
 
 ---

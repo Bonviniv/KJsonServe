@@ -42,6 +42,25 @@ class JsonObject(private val properties: MutableMap<String, JsonValue> = mutable
      * @return Set das chaves do objeto
      */
     fun keys(): Set<String> = properties.keys
+
+    /**
+     * Returns all keys in the JSON object
+     */
+    fun getKeys(): Set<String> = properties.keys
+
+    /**
+     * Implements the multiplication operator (*) for JSON objects
+     * Returns a new object containing only the keys that exist in both objects
+     */
+    operator fun times(other: JsonObject): JsonObject {
+        val result = JsonObject()
+        for (key in this.getKeys()) {
+            if (other.get(key) != null) {
+                result.set(key, this.get(key)!!)
+            }
+        }
+        return result
+    }
     
     /**
      * Filtra os pares chave-valor do objeto com base em um predicado
@@ -65,12 +84,14 @@ class JsonObject(private val properties: MutableMap<String, JsonValue> = mutable
     override fun serialize(): String {
         if (properties.isEmpty()) return "{}"
         
-        return properties.entries.joinToString(
-            prefix = "{",
-            postfix = "}",
-            separator = ",",
-            transform = { (key, value) -> "\"$key\":${value.serialize()}" }
-        )
+        return properties.entries
+            .sortedBy { it.key } // Sort entries by key to maintain consistent order
+            .joinToString(
+                prefix = "{",
+                postfix = "}",
+                separator = ",",
+                transform = { (key, value) -> "\"$key\":${value.serialize()}" }
+            )
     }
     
     /**

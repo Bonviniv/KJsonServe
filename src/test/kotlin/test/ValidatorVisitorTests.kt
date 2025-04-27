@@ -1,9 +1,6 @@
 package test
 
-import model.JsonObject
-import model.JsonNumber
-import model.JsonBoolean
-import model.JsonNull
+import model.*
 import visitor.ValidatorVisitor
 import org.junit.Assert.*
 import org.junit.Test

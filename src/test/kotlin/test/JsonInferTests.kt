@@ -138,8 +138,29 @@ class JsonInferTests {
                 EvalItem("project", 0.8, true, EvalType.PROJECT)
             )
         )
-        val json = JsonInfer.infer(course)
-        val expected = "{\"name\":\"PA\",\"credits\":6,\"evaluation\":[{\"name\":\"quizzes\",\"percentage\":0.2,\"mandatory\":false,\"type\":null},{\"name\":\"project\",\"percentage\":0.8,\"mandatory\":true,\"type\":\"PROJECT\"}]}"
-        assertEquals("Estrutura inferida deve corresponder ao JSON esperado", expected, json.serialize())
+
+        val jsonObj = JsonInfer.infer(course) as JsonObject
+
+        // Verify top-level properties
+        assertEquals("PA", (jsonObj.get("name") as JsonString).value)
+        assertEquals(6.0, (jsonObj.get("credits") as JsonNumber).value.toDouble(), 0.0)
+        
+        // Verify evaluation array
+        val evaluationArray = jsonObj.get("evaluation") as JsonArray
+        assertEquals(2, evaluationArray.size())
+
+        // Verify first evaluation object
+        val quizzes = evaluationArray.get(0) as JsonObject
+        assertEquals("quizzes", (quizzes.get("name") as JsonString).value)
+        assertEquals(0.2, (quizzes.get("percentage") as JsonNumber).value.toDouble(), 0.0)
+        assertEquals(false, (quizzes.get("mandatory") as JsonBoolean).value)
+        assertTrue(quizzes.get("type") is JsonNull)
+
+        // Verify second evaluation object
+        val project = evaluationArray.get(1) as JsonObject
+        assertEquals("project", (project.get("name") as JsonString).value)
+        assertEquals(0.8, (project.get("percentage") as JsonNumber).value.toDouble(), 0.0)
+        assertEquals(true, (project.get("mandatory") as JsonBoolean).value)
+        assertEquals("PROJECT", (project.get("type") as JsonString).value)
     }
 }

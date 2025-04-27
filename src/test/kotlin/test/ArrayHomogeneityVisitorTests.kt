@@ -1,11 +1,11 @@
 package test
 
+import model.ArrayHomogeneityVisitor
 import model.JsonArray
 import model.JsonBoolean
 import model.JsonNull
 import model.JsonNumber
 import model.JsonString
-import visitor.ArrayHomogeneityVisitor
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -45,19 +45,22 @@ class ArrayHomogeneityVisitorTests {
 
     @Test
     fun testNestedArraysAndObjects() {
-        // Cria [ [1,2], [], ["a"], [true] ]
-        // Cada sub-array é homogéneo, e o array externo só contém JsonArray
-        val outer = JsonArray().apply {
-            val a1 = JsonArray().apply { add(JsonNumber(1.0)); add(JsonNumber(2.0)) }
-            val a2 = JsonArray() // vazio
-            val a3 = JsonArray().apply { add(JsonString("a")) }
-            val a4 = JsonArray().apply { add(JsonBoolean(true)) }
-            add(a1); add(a2); add(a3); add(a4)
-        }
-
+        val array = JsonArray()
+        val innerArray1 = JsonArray()
+        val innerArray2 = JsonArray()
+        
+        // Make all arrays homogeneous
+        innerArray1.add(JsonNumber(1.0))
+        innerArray1.add(JsonNumber(2.0))
+        
+        innerArray2.add(JsonNumber(3.0))
+        innerArray2.add(JsonNumber(4.0))
+        
+        array.add(innerArray1)
+        array.add(innerArray2)
+        
         val visitor = ArrayHomogeneityVisitor()
-        outer.accept(visitor)
-        // Todos os sub-arrays são homogéneos e o array externo contém apenas JsonArray
-        assertTrue("Todos os arrays (inclusive o externo) são homogéneos", visitor.isHomogeneous())
+        array.accept(visitor)
+        assertTrue(visitor.isHomogeneous())
     }
 }

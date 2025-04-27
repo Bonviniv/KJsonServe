@@ -3,7 +3,8 @@ package model
 /**
  * Interface para o padrão Visitor que permite realizar operações sobre diferentes tipos de valores JSON
  */
-interface JsonVisitor {
+//mudança de nome pq já timha uma classe com esse nome
+interface NJsonVisitor {
     /**
      * Processa um objeto JSON
      * @param jsonObject O objeto a ser processado

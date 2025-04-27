@@ -22,8 +22,8 @@
     </repositories>
 
     <build>
-        <sourceDirectory>src/main</sourceDirectory>
-        <testSourceDirectory>src/main/test</testSourceDirectory>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
