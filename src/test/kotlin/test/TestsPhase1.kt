@@ -22,7 +22,7 @@ class TestsPhase1 {
         assertEquals("true", bool.serialize())
 
         // Null test
-        val nullVal = JsonNull.INSTANCE
+        val nullVal = JsonNull
         assertEquals("null", nullVal.serialize())
     }
 

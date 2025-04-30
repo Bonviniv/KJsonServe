@@ -7,7 +7,7 @@ import org.junit.Assert.*
 class JsonNullTests {
     @Test
     fun testNullSerialization() {
-        val nullValue = JsonNull.INSTANCE
+        val nullValue = JsonNull
         assertEquals("null", nullValue.serialize())
     }
 }

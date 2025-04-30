@@ -43,7 +43,7 @@ class JsonInstantiationTests {
 
     @Test
     fun testJsonNullInstantiation() {
-        val nullValue = JsonNull()
+        val nullValue = JsonNull
         assertNotNull(nullValue)
         assertEquals("null", nullValue.serialize())
     }
@@ -70,7 +70,7 @@ class JsonInstantiationTests {
         obj.set("nome", JsonString("João Silva"))
         obj.set("idade", JsonNumber(30.0))
         obj.set("ativo", JsonBoolean(true))
-        obj.set("endereco", JsonNull())
+        obj.set("endereco", JsonNull)
 
         //assertTrue(obj.containsKey("nome"))
         assertTrue(obj.get("nome") is JsonString)

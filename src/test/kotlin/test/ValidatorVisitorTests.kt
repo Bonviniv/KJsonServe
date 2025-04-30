@@ -27,7 +27,7 @@ class ValidatorVisitorTests {
     fun testObjectWithEmptyKeyIsInvalid() {
         // Objeto contendo chave vazia deve ser considerado inválido
         val obj = JsonObject()
-        obj.set("", JsonNull.INSTANCE)
+        obj.set("", JsonNull)
 
         val visitor = ValidatorVisitor()
         obj.accept(visitor)

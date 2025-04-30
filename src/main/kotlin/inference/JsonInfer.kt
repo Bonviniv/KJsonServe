@@ -7,7 +7,7 @@ import kotlin.reflect.full.memberProperties
 object JsonInfer {
     fun infer(value: Any?): JsonValue {
         return when (value) {
-            null -> JsonNull.INSTANCE
+            null -> JsonNull
             is JsonValue -> value
             is String -> JsonString(value)
             is Number -> JsonNumber(value)

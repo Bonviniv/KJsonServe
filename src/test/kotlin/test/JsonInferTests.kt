@@ -49,7 +49,7 @@ class JsonInferTests {
     fun testInferNull() {
         val j = JsonInfer.infer(null)
         assertTrue(j is JsonNull)
-        assertSame(JsonNull.INSTANCE, j)
+        assertSame(JsonNull, j)
     }
 
     @Test

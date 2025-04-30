@@ -96,7 +96,7 @@ class JsonArrayTest {
         array.add(JsonBoolean(true))
         assertEquals("[\"teste\",42,true]", array.serialize())
 
-        array.add(JsonNull.INSTANCE)
+        array.add(JsonNull)
         assertEquals("[\"teste\",42,true,null]", array.serialize())
     }
 

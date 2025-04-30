@@ -3,7 +3,7 @@ package model
 /**
  * Representa um valor nulo no formato JSON
  */
-class JsonNull : JsonValue() {
+object JsonNull : JsonValue() {
     /**
      * Serializa o valor nulo para string no formato JSON
      * @return String "null"
@@ -16,10 +16,5 @@ class JsonNull : JsonValue() {
      */
     override fun accept(visitor: JsonVisitor) {
         visitor.visitNull(this)
-    }
-    
-    companion object {
-        // Singleton para evitar múltiplas instâncias de JsonNull
-        val INSTANCE = JsonNull()
     }
 }
