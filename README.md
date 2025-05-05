@@ -1,31 +1,42 @@
-# PA_projeto  
+# PA_projeto
 **Projeto de PA (2025)**  
-*Vitor Barbosa (105248) e Paulo Francisco Pinto (128962)*  
-
-
-# JSON Manipulation Library
-Biblioteca Kotlin para geração e manipulação de JSON em memória, sem dependências externas (exceto JUnit para testes).
+*Vitor Barbosa (105248) e Paulo Francisco Pinto (128962)*
 
 ---
+
+# JSON Manipulation Library & Mini HTTP Framework (`GetJson`)
+
+Biblioteca Kotlin para geração e manipulação de JSON em memória, sem dependências externas (exceto JUnit para testes) e com suporte a APIs HTTP simples via anotação.
+
+---
+
 ## 📖 Visão Geral
-Esta biblioteca oferece:
 
-- **Modelos em Memória**
-  - `JsonObject`, `JsonArray`, `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`.
-- **Serialização**
-  - Converte qualquer modelo JSON em uma string válida (padrão JSON).
-- **Operações Funcionais**
-  - `filter` e `map` em arrays (`JsonArray`).
-  - `filter` em objetos (`JsonObject`).
-  - Operador `*` para interseção de objetos JSON.
-- **Visitors**
-  - `ValidatorVisitor`: valida chaves únicas e não-vazias em `JsonObject`.
-  - `ArrayHomogeneityVisitor`: garante que elementos não-null em cada `JsonArray` sejam do mesmo tipo.
-- **Inferência de Objetos Kotlin**
-  - `JsonInfer.infer(...)`: converte valores Kotlin (primitivos, listas, mapas, enums, data classes) em modelos `JsonValue`.
+Este projeto oferece:
+
+### ✅ JSON In-Memory Model
+- `JsonObject`, `JsonArray`, `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`.
+- Suporte a serialização JSON padrão.
+- Operações funcionais: `filter`, `map`, `*` (interseção), etc.
+- Validação por Visitor:
+  - `ValidatorVisitor`: valida unicidade e formato das chaves.
+  - `ArrayHomogeneityVisitor`: valida homogeneidade de tipos num array.
+
+### ✅ Inferência via Reflexão
+- `JsonInfer.infer(...)`: converte objetos Kotlin em modelos JSON usando reflexão.
+- Suporta: primitivos, `List`, `Map`, `Enum`, `Data class`, `null`.
+
+### ✅ Mini Framework `GetJson`
+- Framework de rotas HTTP `GET` via anotação:
+  - `@Mapping`: mapeia classes e métodos para endpoints.
+  - `@Path`: mapeia partes da URL (ex: `/path/{id}`).
+  - `@Param`: extrai parâmetros da query string (`?n=1&text=foo`).
+- Conversão automática do resultado para JSON com `JsonInfer`.
 
 ---
+
 ## ⚙️ Instalação (Maven)
+
 Adicione ao seu `pom.xml`:
 
 ```xml
@@ -58,13 +69,8 @@ Adicione ao seu `pom.xml`:
 </dependencies>
 ```
 
-Após isso, execute:
-
-```bash
-mvn clean package
-```
-
 ---
+
 ## 🚀 Quickstart
 
 ### 1. Criação Manual
@@ -82,36 +88,27 @@ println(obj.serialize())
 
 ### 2. Filtrar e Mapear Arrays
 ```kotlin
-import model.*
-
 val arr = JsonArray().apply {
   add(JsonNumber(1.0))
   add(JsonNumber(2.0))
   add(JsonNumber(3.0))
 }
 
-// Filtrar números pares\ nval even = arr.filter { (it as JsonNumber).value.toDouble() % 2 == 0.0 }
-println(even.serialize())
-// Saída: [2]
+val even = arr.filter { (it as JsonNumber).value.toDouble() % 2 == 0.0 }
+println(even.serialize()) // [2]
 
-// Duplicar valores
 val doubled = arr.map {
   if (it is JsonNumber) JsonNumber((it.value as Number).toDouble() * 2) else it
 }
-println(doubled.serialize())
-// Saída: [2,4,6]
+println(doubled.serialize()) // [2,4,6]
 ```
 
 ### 3. Uso de Visitors
 ```kotlin
-import visitor.*
-
-// ValidatorVisitor
 val validator = ValidatorVisitor()
 obj.accept(validator)
 println("Válido? ${validator.isValid()}")
 
-// ArrayHomogeneityVisitor
 val homog = ArrayHomogeneityVisitor()
 arr.accept(homog)
 println("Homogêneo? ${homog.isHomogeneous()}")
@@ -119,97 +116,100 @@ println("Homogêneo? ${homog.isHomogeneous()}")
 
 ### 4. Inferência via Reflexão
 ```kotlin
-import inference.JsonInfer
-
 data class Person(val name: String, val age: Int)
-
 val inferred = JsonInfer.infer(Person("Bob", 25))
 println(inferred.serialize())
-// Saída: {"name":"Bob","age":25}
+// {"name":"Bob","age":25}
+```
+
+### 5. Framework HTTP `GetJson`
+```kotlin
+@Mapping("api")
+class Controller {
+  @Mapping("ints")
+  fun demo(): List<Int> = listOf(1, 2, 3)
+
+  @Mapping("path/{id}")
+  fun dynamic(@Path id: String): String = "$id!"
+
+  @Mapping("args")
+  fun args(@Param("n") n: Int, @Param("text") text: String): Map<String, String> =
+    mapOf(text to text.repeat(n))
+}
+
+// Lançar servidor
+val app = GetJson(Controller::class)
+app.start(8080)
 ```
 
 ---
+
 ## 📑 API Reference
 
-### Classe Abstrata `JsonValue`
-- `abstract fun serialize(): String`
-- `abstract fun accept(visitor: JsonVisitor)`
+### `JsonValue` (abstract)
+- `serialize(): String`
+- `accept(visitor: JsonVisitor)`
 
 ### `JsonObject`
-- `fun set(key: String, value: JsonValue)`
-- `fun get(key: String): JsonValue?`
-- `fun filter(predicate: (String, JsonValue) -> Boolean): JsonObject`
-- `fun serialize(): String`
-- `operator fun times(other: JsonObject): JsonObject` // Added this line
-- `fun getKeys(): Set<String>` // Added this line
+- `set(key: String, value: JsonValue)`
+- `get(key: String): JsonValue?`
+- `filter((String, JsonValue) -> Boolean): JsonObject`
+- `operator fun times(other: JsonObject): JsonObject`
+- `getKeys(): Set<String>`
 
 ### `JsonArray`
-- `fun add(value: JsonValue)`
-- `fun get(index: Int): JsonValue`
-- `fun size(): Int`
-- `fun filter(predicate: (JsonValue) -> Boolean): JsonArray`
-- `fun map(transform: (JsonValue) -> JsonValue): JsonArray`
-- `fun serialize(): String`
+- `add(value: JsonValue)`
+- `get(index: Int): JsonValue`
+- `size(): Int`
+- `filter((JsonValue) -> Boolean): JsonArray`
+- `map((JsonValue) -> JsonValue): JsonArray`
 
-### `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull` (subclasses de `JsonValue`)
-
-### `interface JsonVisitor`
-Métodos: `visitObject`, `visitArray`, `visitString`, `visitNumber`, `visitBoolean`, `visitNull`.
-
-### Visitors:
-- `ValidatorVisitor`: `fun isValid(): Boolean`
-- `ArrayHomogeneityVisitor`: `fun isHomogeneous(): Boolean`
+### Visitors
+- `ValidatorVisitor.isValid()`
+- `ArrayHomogeneityVisitor.isHomogeneous()`
 
 ### Inferência
-- `object JsonInfer`:
-  - `fun infer(value: Any?): JsonValue`
+- `JsonInfer.infer(value: Any?): JsonValue`
 
 ---
-## 🔧 Testes
-Execute todos os testes:
+
+## 🧪 Testes
 ```bash
 mvn test
 ```
 
 ---
+
+## 🧰 Build JAR
+```bash
+mvn clean package
+mv target/ProjetoPA-1.0.0.jar release/ProjetoPA-1.0.0.jar
+```
+
+---
+
 ## 📁 Project Structure
-```markdown
+
+```
 ProjetoPA/
 ├── src/
-│   ├── main/
-│   │   └── kotlin/
-│   │       ├── model/
-│   │       │   ├── JsonArray.kt
-│   │       │   ├── JsonBoolean.kt
-│   │       │   ├── JsonNull.kt
-│   │       │   ├── JsonNumber.kt
-│   │       │   ├── JsonObject.kt
-│   │       │   ├── JsonString.kt
-│   │       │   ├── JsonValue.kt
-│   │       │   └── JsonVisitor.kt
-│   │       ├── visitor/
-│   │       │   ├── ArrayHomogeneityVisitor.kt
-│   │       │   └── ValidatorVisitor.kt
-│   │       └── inference/
-│   │           └── JsonInfer.kt
-│   └── test/
-│       └── kotlin/
-│           └── test/
-│               ├── Jsons/
-│               │   └── (JSON test files)
-│               ├── TestsPhase1.kt
-│               ├── TestsPhase2.kt
-│               ├── JsonBooleanTests.kt
-│               ├── JsonNullTests.kt
-│               ├── JsonNumberTests.kt
-│               ├── JsonStringTests.kt
-│               └── ValidatorVisitorTests.kt
+│   ├── main/kotlin/
+│   │   ├── model/
+│   │   ├── visitor/
+│   │   ├── inference/
+│   │   └── getjson/
+│   └── test/kotlin/
+│       └── getjson/
+├── docs/diagrams/JsonModelDiagram.png
+├── release/ProjetoPA-1.0.0.jar
 └── pom.xml
 ```
 
 ---
-## 🤝 Contribuição
-Sinta-se livre para abrir _issues_ ou _pull requests_.
 
----
-*Projeto desenvolvido para a disciplina de Programação Avançada, Mestrado em Engenharia Informática no ISCTE IUL - Lisboa @ 2025.*
+## 👥 Autores
+
+- Vítor Barbosa (105248)
+- Paulo Francisco Pinto (128962)
+
+Projeto desenvolvido no âmbito da unidade curricular **Programação Avançada** (Mestrado em Engenharia Informática – ISCTE 2024/2025).
