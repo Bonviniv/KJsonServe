@@ -1,12 +1,7 @@
 package test
 
-import model.JsonArray
-import model.JsonBoolean
-import model.JsonNull
-import model.JsonNumber
-import model.JsonObject
-import model.JsonString
-import model.JsonVisitor
+import model.*
+import visitor.JsonVisitor
 import org.junit.Assert.*
 import org.junit.Test
 

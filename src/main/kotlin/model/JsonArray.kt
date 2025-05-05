@@ -1,5 +1,7 @@
 package model
 
+import visitor.JsonVisitor
+
 /**
  * Representa um array JSON como uma lista de valores JSON
  * @property elements Lista de elementos JSON contidos no array

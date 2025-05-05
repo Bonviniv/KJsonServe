@@ -1,5 +1,7 @@
 package model
 
+import visitor.JsonVisitor
+
 /**
  * Representa um valor nulo no formato JSON
  */

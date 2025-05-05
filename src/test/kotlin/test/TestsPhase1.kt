@@ -4,6 +4,7 @@ import model.*
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Assert.assertEquals
+import visitor.ValidatorVisitor
 
 class TestsPhase1 {
     // Basic Value Tests
@@ -23,7 +24,7 @@ class TestsPhase1 {
 
         // Null test
         val nullVal = JsonNull
-        assertEquals("null", nullVal.serialize())
+        assertEquals("null", JsonNull.serialize())
     }
 
     // Array Tests
@@ -104,7 +105,7 @@ class TestsPhase1 {
 
         // Fix the multiplication in map operation
         val mapped = array.map { 
-            if (it is JsonNumber) JsonNumber(it.value.toDouble() * 2) 
+            if (it is JsonNumber) JsonNumber(it.value.toDouble() * 2)
             else it 
         }
 

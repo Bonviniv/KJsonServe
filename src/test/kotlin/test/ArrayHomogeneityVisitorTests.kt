@@ -1,13 +1,11 @@
 package test
 
-import model.ArrayHomogeneityVisitor
 import model.JsonArray
-import model.JsonBoolean
-import model.JsonNull
 import model.JsonNumber
 import model.JsonString
 import org.junit.Assert.*
 import org.junit.Test
+import visitor.ArrayHomogeneityVisitor
 
 /**
  * Testes para ArrayHomogeneityVisitor: garante que cada JsonArray

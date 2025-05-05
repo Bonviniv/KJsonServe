@@ -1,15 +1,9 @@
 package test
 
-import model.JsonArray
-import model.JsonBoolean
-import model.JsonNull
-import model.JsonNumber
-import model.JsonObject
-import model.JsonString
-import model.JsonVisitor
+import model.*
+import visitor.JsonVisitor
 import org.junit.Assert.*
 import org.junit.Test
-
 
 class JsonObjectTest {
 
@@ -29,15 +23,6 @@ class JsonObjectTest {
         assertEquals(1, obj.size())
     }
 
-    //@Test
-    //fun testContainsKey() {
-     //   val obj = JsonObject()
-      //  assertFalse(obj.containsKey("chave"))
-
-      //  obj.set("chave", JsonString("valor"))
-      //  assertTrue(obj.containsKey("chave"))
-   // }
-
     @Test
     fun testSize() {
         val obj = JsonObject()
@@ -49,31 +34,6 @@ class JsonObjectTest {
         obj.set("chave2", JsonNumber(42.0))
         assertEquals(2, obj.size())
     }
-
-    //@Test
-    //fun testRemove() {
-      // val obj = JsonObject()
-        //obj.set("chave", JsonString("valor"))
-
-        //assertTrue(obj.containsKey("chave"))
-        //obj.remove("chave")
-        //assertFalse(obj.containsKey("chave"))
-    //}
-
-    //@Test
-    //fun testFilter() {
-       // val obj = JsonObject()
-       // obj.set("nome", JsonString("Teste"))
-       // obj.set("idade", JsonNumber(30.0))
-       // obj.set("ativo", JsonBoolean(true))
-
-       // val filtered = obj.filter { key, value -> value is JsonNumber }
-
-        //assertEquals(1, filtered.size())
-        //assertTrue(filtered.containsKey("idade"))
-        //assertFalse(filtered.containsKey("nome"))
-        //assertFalse(filtered.containsKey("ativo"))
-    //}
 
     @Test
     fun testSerialize() {
@@ -115,5 +75,20 @@ class JsonObjectTest {
         obj.accept(mockVisitor)
         assertTrue(mockVisitor.visitedObject)
     }
+
+    @Test
+    fun testJsonObjectFilter() {
+        val obj = JsonObject().apply {
+            set("keep", JsonString("yes"))
+            set("remove", JsonNumber(0.0))
+        }
+        val filtered = obj.filter { key, _ -> key == "keep" }
+        assertEquals(1, filtered.size())
+        assertNotNull(filtered.get("keep"))
+        assertNull(filtered.get("remove"))
+        // Verifica se o original não foi mutado:
+        assertNotNull(obj.get("remove"))
+    }
+
 }
 

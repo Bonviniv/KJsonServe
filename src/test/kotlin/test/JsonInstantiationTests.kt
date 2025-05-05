@@ -1,6 +1,8 @@
+package test
+
+import model.*
 import org.junit.Test
 import org.junit.Assert.*
-import model.*
 
 class JsonInstantiationTests {
 
@@ -45,7 +47,7 @@ class JsonInstantiationTests {
     fun testJsonNullInstantiation() {
         val nullValue = JsonNull
         assertNotNull(nullValue)
-        assertEquals("null", nullValue.serialize())
+        assertEquals("null", JsonNull.serialize())
     }
 
     @Test

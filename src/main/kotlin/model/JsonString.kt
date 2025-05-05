@@ -1,5 +1,7 @@
 package model
 
+import visitor.JsonVisitor
+
 /**
  * Representa um valor string no formato JSON
  * @property value O valor da string

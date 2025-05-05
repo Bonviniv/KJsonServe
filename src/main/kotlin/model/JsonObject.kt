@@ -1,5 +1,6 @@
 package model
 
+import visitor.JsonVisitor
 
 
 /**
@@ -22,8 +23,6 @@ class JsonObject(private val properties: MutableMap<String, JsonValue> = mutable
     fun set(key: String, value: JsonValue) {
         properties[key] = value
     }
-
-
 
     /**
      * Retorna o número de pares chave-valor no objeto
@@ -101,6 +100,5 @@ class JsonObject(private val properties: MutableMap<String, JsonValue> = mutable
     override fun accept(visitor: JsonVisitor) {
         visitor.visitObject(this)
     }
-
 
 }

@@ -1,5 +1,7 @@
 package model
 
+import visitor.JsonVisitor
+
 /**
  * Representa um valor JSON abstrato (base para todos os tipos JSON)
  */

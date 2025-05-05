@@ -1,9 +1,9 @@
 package test
 
 import model.*
-import visitor.ValidatorVisitor
 import org.junit.Assert.*
 import org.junit.Test
+import visitor.ValidatorVisitor
 
 /**
  * Testes para o ValidatorVisitor, que valida a estrutura de JsonObjects.

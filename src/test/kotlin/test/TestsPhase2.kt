@@ -1,8 +1,7 @@
 package test
 
-import model.*
 import inference.JsonInfer
-import visitor.ValidatorVisitor
+import model.*
 import org.junit.Test
 import org.junit.Assert.*
 

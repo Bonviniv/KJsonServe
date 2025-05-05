@@ -1,5 +1,7 @@
 package model
 
+import visitor.JsonVisitor
+
 /**
  * Representa um valor booleano no formato JSON (true ou false)
  * @property value O valor booleano a ser representado

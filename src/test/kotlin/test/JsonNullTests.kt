@@ -8,7 +8,7 @@ class JsonNullTests {
     @Test
     fun testNullSerialization() {
         val nullValue = JsonNull
-        assertEquals("null", nullValue.serialize())
+        assertEquals("null", JsonNull.serialize())
     }
 }
 

@@ -1,4 +1,6 @@
-package model
+package visitor
+
+import model.*
 
 class ArrayHomogeneityVisitor : JsonVisitor {
     private var currentType: Class<*>? = null
