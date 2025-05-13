@@ -1,3 +1,4 @@
+
 package getjson.annotations
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)

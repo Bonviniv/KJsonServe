@@ -6,11 +6,13 @@ import org.junit.Assert.*
 
 class JsonBooleanTests {
     @Test
-    fun testBooleanSerialization() {
+    fun testBooleanValue() {
         val trueValue = JsonBoolean(true)
-        val falseValue = JsonBoolean(false)
-        
+        assertTrue(trueValue.value)
         assertEquals("true", trueValue.serialize())
+
+        val falseValue = JsonBoolean(false)
+        assertFalse(falseValue.value)
         assertEquals("false", falseValue.serialize())
     }
 }

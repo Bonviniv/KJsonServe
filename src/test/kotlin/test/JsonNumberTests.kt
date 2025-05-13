@@ -6,12 +6,14 @@ import org.junit.Assert.*
 
 class JsonNumberTests {
     @Test
-    fun testNumberSerialization() {
-        val intNumber = JsonNumber(42)
-        val doubleNumber = JsonNumber(42.5)
-        
-        assertEquals("42", intNumber.serialize())
-        assertEquals("42.5", doubleNumber.serialize())
+    fun testNumberValue() {
+        val intValue = JsonNumber(42)
+        assertEquals(42, intValue.value)
+        assertEquals("42", intValue.serialize())
+
+        val doubleValue = JsonNumber(3.14)
+        assertEquals(3.14, doubleValue.value)
+        assertEquals("3.14", doubleValue.serialize())
     }
 }
 

@@ -6,9 +6,10 @@ import org.junit.Assert.*
 
 class JsonStringTests {
     @Test
-    fun testStringSerialization() {
-        val simpleString = JsonString("hello")
-        assertEquals("\"hello\"", simpleString.serialize())
+    fun testStringValue() {
+        val str = JsonString("test")
+        assertEquals("test", str.value)
+        assertEquals("\"test\"", str.serialize())
     }
 }
 
