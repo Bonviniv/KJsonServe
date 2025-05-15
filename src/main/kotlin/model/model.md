@@ -1,128 +1,127 @@
-# JSON Model Package Documentation
+# Documentação do Pacote `model`
 
-## Overview
-The model package provides the core JSON value types and their implementations, following the JSON specification.
+## Visão Geral
 
-## Base Class
+O pacote `model` fornece os tipos fundamentais de valores JSON e as suas implementações, seguindo a especificação do formato JSON. Estes tipos permitem construir, manipular e serializar estruturas JSON de forma segura e programática.
 
-### JsonValue (abstract)
-Base class for all JSON value types.
+---
 
-#### Abstract Methods
+## Classe Base
+
+### `JsonValue` (classe abstrata)
+Classe abstrata base para todos os tipos de valores JSON.
+
+#### Métodos abstratos
 - `fun serialize(): String`
-  - Converts JSON value to its string representation
+  - Converte o valor JSON para a sua representação textual no formato padrão JSON.
 - `fun accept(visitor: JsonVisitor)`
-  - Implements Visitor pattern for JSON operations
+  - Implementa o padrão Visitor para permitir operações sobre a estrutura.
 
-## Concrete Classes
+---
 
-### JsonObject
-Represents a JSON object as key-value pairs.
+## Classes Concretas
 
-#### Properties
+### `JsonObject`
+Representa um objeto JSON composto por pares chave-valor.
+
+#### Propriedades
 - `properties: MutableMap<String, JsonValue>`
 
-#### Methods
-- `fun get(key: String): JsonValue?`
-  - Retrieves value by key
-- `fun set(key: String, value: JsonValue)`
-  - Sets value for key
-- `fun size(): Int`
-  - Returns number of properties
-- `fun values(): Collection<JsonValue>`
-  - Returns all values
-- `fun keys(): Set<String>`
-  - Returns all keys
-- `fun getKeys(): Set<String>`
-  - Alternative method for getting keys
-- `operator fun times(other: JsonObject): JsonObject`
-  - Intersection of two objects
-- `fun filter(predicate: (String, JsonValue) -> Boolean): JsonObject`
-  - Filters properties based on predicate
+#### Métodos
+- `get(key: String): JsonValue?` — Obtém o valor associado à chave.
+- `set(key: String, value: JsonValue)` — Define um novo par chave-valor.
+- `size(): Int` — Número de propriedades.
+- `values(): Collection<JsonValue>` — Lista dos valores armazenados.
+- `keys(): Set<String>` — Conjunto das chaves presentes.
+- `getKeys(): Set<String>` — Alias de `keys()`.
+- `operator fun times(other: JsonObject): JsonObject` — Interseção entre dois objetos.
+- `filter(predicate: (String, JsonValue) -> Boolean): JsonObject` — Filtra os pares com base numa condição.
 
-### JsonArray
-Represents a JSON array.
+---
 
-#### Properties
+### `JsonArray`
+Representa um array JSON.
+
+#### Propriedades
 - `elements: MutableList<JsonValue>`
 
-#### Methods
-- `fun add(value: JsonValue)`
-  - Adds element to array
-- `fun get(index: Int): JsonValue`
-  - Gets element at index
-- `fun set(index: Int, value: JsonValue)`
-  - Sets element at index
-- `fun size(): Int`
-  - Returns array size
-- `fun elements(): List<JsonValue>`
-  - Returns all elements
-- `fun filter(predicate: (JsonValue) -> Boolean): JsonArray`
-  - Filters elements
-- `fun map(transform: (JsonValue) -> JsonValue): JsonArray`
-  - Transforms elements
+#### Métodos
+- `add(value: JsonValue)` — Adiciona um elemento.
+- `get(index: Int): JsonValue` — Obtém o elemento numa posição.
+- `set(index: Int, value: JsonValue)` — Substitui o elemento na posição.
+- `size(): Int` — Devolve o tamanho do array.
+- `elements(): List<JsonValue>` — Lista imutável com os elementos.
+- `filter(predicate: (JsonValue) -> Boolean): JsonArray` — Filtra elementos.
+- `map(transform: (JsonValue) -> JsonValue): JsonArray` — Aplica uma transformação.
 
-### JsonString
-Represents a JSON string value.
+---
 
-#### Properties
+### `JsonString`
+Representa um valor textual (string) em JSON.
+
+#### Propriedades
 - `value: String`
 
-#### Methods
-- `override fun serialize(): String`
-  - Handles special character escaping
-- `override fun equals(other: Any?): Boolean`
-  - String value comparison
-- `override fun hashCode(): Int`
-  - Consistent with equals
+#### Métodos
+- `serialize()` — Trata o escape de caracteres especiais.
+- `equals()`, `hashCode()` — Garantem igualdade com base no conteúdo da string.
 
-### JsonNumber
-Represents a JSON numeric value.
+---
 
-#### Properties
+### `JsonNumber`
+Representa um valor numérico JSON (inteiro ou decimal).
+
+#### Propriedades
 - `value: Number`
 
-#### Methods
-- `override fun serialize(): String`
-  - Formats integers and decimals appropriately
+#### Métodos
+- `serialize()` — Serializa o número, removendo casas decimais se for inteiro.
 
-### JsonBoolean
-Represents a JSON boolean value.
+---
 
-#### Properties
+### `JsonBoolean`
+Representa um valor booleano (true/false).
+
+#### Propriedades
 - `value: Boolean`
 
-#### Methods
-- `override fun serialize(): String`
-  - Returns "true" or "false"
+#### Métodos
+- `serialize()` — Devolve `"true"` ou `"false"`.
 
-### JsonNull
-Represents a JSON null value.
+---
 
-#### Properties
-- Singleton object
+### `JsonNull`
+Representa o valor `null` em JSON.
 
-#### Methods
-- `override fun serialize(): String`
-  - Returns "null"
+#### Tipo
+- Objeto Singleton
 
-## Common Features
-All classes implement:
-- Serialization to valid JSON format
-- Visitor pattern support
-- Type-safe operations
-- Immutable value semantics
+#### Métodos
+- `serialize()` — Devolve `"null"`.
 
-## Usage Example
+---
+
+## Funcionalidades Comuns
+
+Todas as classes:
+- São serializáveis para o formato JSON válido.
+- Suportam o padrão Visitor.
+- Permitem operações seguras e coesas.
+- Promovem a imutabilidade lógica dos dados.
+
+---
+
+## Exemplo de Utilização
+
 ```kotlin
-// Creating a JSON object
+// Criar um objeto JSON
 val person = JsonObject().apply {
-    set("name", JsonString("John"))
+    set("name", JsonString("João"))
     set("age", JsonNumber(30))
     set("address", JsonObject().apply {
-        set("city", JsonString("New York"))
+        set("city", JsonString("Lisboa"))
     })
 }
 
-// Serializing to JSON string
+// Serializar para string JSON
 val json = person.serialize()

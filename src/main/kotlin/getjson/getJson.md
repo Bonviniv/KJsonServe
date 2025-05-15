@@ -1,75 +1,94 @@
-# GetJson Package Documentation
+# Documentação do Pacote `getjson`
 
-## Overview
-The GetJson package provides a lightweight HTTP server implementation for JSON-based REST APIs, with support for routing, parameter handling, and automatic JSON serialization.
+## Visão Geral
 
-## Classes
+O pacote `getjson` fornece uma implementação leve de um servidor HTTP para criação de APIs REST baseadas em JSON. Suporta mapeamento de rotas via anotações, passagem de parâmetros (via path e query string) e serialização automática de respostas JSON a partir de valores Kotlin.
 
-### GetJson
-Main class responsible for setting up and managing the HTTP server.
+---
 
-#### Constructor
+## Classe Principal
+
+### `GetJson`
+Classe principal responsável por configurar e gerir o servidor HTTP.
+
+#### Construtor
 - `GetJson(vararg controllerClasses: KClass<*>)`
-  - Initializes the server with controller classes
-  - Scans for `@Mapping` annotations to set up routes
+  - Inicializa o servidor com as classes de controladores fornecidas.
+  - Procura anotações `@Mapping` para configurar as rotas automaticamente.
 
-#### Public Methods
+#### Métodos Públicos
+
 - `fun start(port: Int): HttpServer`
-  - Starts the server on specified port
-  - Returns the HttpServer instance
-  - Prints confirmation message with port number
+  - Inicia o servidor na porta especificada.
+  - Devolve a instância de `HttpServer`.
+  - Imprime uma mensagem de confirmação com o número da porta.
 
-#### Private Methods
-- `private fun handle(exchange: HttpExchange)`
-  - Handles incoming HTTP requests
-  - Matches routes and executes corresponding controller methods
-  - Serializes responses to JSON
+---
 
-- `private fun match(routePattern: String, path: String): Boolean`
-  - Matches URL paths against route patterns
-  - Supports path variables in {variable} format
+## Métodos Privados
 
-- `private fun buildArgs(exchange: HttpExchange, route: Route): List<Any?>`
-  - Extracts and converts path variables and query parameters
-  - Maps parameters to controller method arguments
+- `handle(exchange: HttpExchange)`
+  - Processa pedidos HTTP recebidos.
+  - Faz correspondência com a rota definida.
+  - Executa o método do controlador.
+  - Serializa a resposta como JSON.
 
-- `private fun convert(raw: String?, target: KClass<*>): Any?`
-  - Converts string parameters to appropriate types
-  - Supports: String, Int, Double, Boolean
+- `match(routePattern: String, path: String): Boolean`
+  - Compara a rota esperada com o caminho da requisição.
+  - Suporta variáveis entre `{}` (e.g. `{id}`).
 
-#### Inner Classes
-- `private data class Route`
-  - Properties:
-    - `rawPath: String`: The route path pattern
-    - `instance: Any`: Controller instance
-    - `method: KFunction<*>`: Controller method
+- `buildArgs(exchange: HttpExchange, route: Route): List<Any?>`
+  - Extrai argumentos do caminho (`@Path`) e da query string (`@Param`).
+  - Converte os argumentos para os tipos esperados.
+  - Prepara os argumentos para invocar o método do controlador.
 
-## Annotations
+- `convert(raw: String?, target: KClass<*>): Any?`
+  - Converte valores em texto (strings) para os tipos básicos suportados.
+  - Suporta os tipos: `String`, `Int`, `Double`, `Boolean`.
 
-### @Mapping
-- Target: Classes and Functions
-- Purpose: Defines URL mappings for controllers and methods
-- Parameters:
-  - `value: String`: The URL path
+---
 
-### @Path
-- Target: Method Parameters
-- Purpose: Marks parameters to be bound from path variables
-- No additional parameters
+## Classe Interna
 
-### @Param
-- Target: Method Parameters
-- Purpose: Marks parameters to be bound from query parameters
-- Parameters:
-  - `value: String`: Custom parameter name (optional)
+### `Route`
+Classe interna que representa uma rota registada.
 
-## Usage Example
+#### Propriedades
+- `rawPath: String` — Padrão da rota (com ou sem variáveis).
+- `instance: Any` — Instância do controlador.
+- `method: KFunction<*>` — Referência ao método do controlador.
+
+---
+
+## Anotações
+
+### `@Mapping`
+- **Alvo:** Classes e funções.
+- **Função:** Define o caminho da URL associado a um controlador ou método.
+- **Parâmetro:**
+  - `value: String` — Caminho a mapear (ex: `"api"` ou `"utilizadores"`).
+
+### `@Path`
+- **Alvo:** Parâmetros de função.
+- **Função:** Liga o parâmetro ao valor extraído diretamente do caminho da URL (ex: `/user/{id}`).
+
+### `@Param`
+- **Alvo:** Parâmetros de função.
+- **Função:** Liga o parâmetro ao valor extraído da query string (ex: `?nome=João`).
+- **Parâmetro:**
+  - `value: String` — Nome do parâmetro (pode ser omitido, usando o nome do argumento).
+
+---
+
+## Exemplo de Utilização
+
 ```kotlin
 @Mapping("/api")
 class UserController {
+
     @Mapping("/user/{id}")
     fun getUser(@Path id: Int, @Param name: String?): User {
-        // Handler implementation
+        // Lógica do controlador
     }
 }
 

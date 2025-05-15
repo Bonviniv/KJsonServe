@@ -1,76 +1,86 @@
-# JSON Manipulation Library
+# Biblioteca de Manipulação de JSON
 
-## Advanced Programming \- Project 2024/2025
+## Programação Avançada — Projeto 2024/2025
 
-The aim is to create a Kotlin library for generating and manipulating [JSON](https://www.json.org/) using in-memory models, involving all its values types:
+O objetivo é desenvolver uma biblioteca em Kotlin para criar e manipular estruturas JSON em memória, suportando todos os tipos de valores definidos pela especificação:
 
-* Objects  
-* Arrays  
-* Strings  
-* Numbers  
-* Booleans  
-* Null
+- Objetos (`JsonObject`)
+- Arrays (`JsonArray`)
+- Strings (`JsonString`)
+- Números (`JsonNumber`)
+- Booleanos (`JsonBoolean`)
+- Nulo (`JsonNull`)
 
-| Note: The library will not handle *parsing* of textual JSON (although this would make sense as a library component). The focus is only on in-memory manipulation and further serialization to strings that adhere to the standard format. |
-| :---- |
+> ⚠️ Nota: A biblioteca **não trata do parsing** de texto JSON (ler strings para JSON). O foco está na **manipulação em memória** e serialização para strings compatíveis com JSON.
 
-| Attention: No external libraries/frameworks are allowed in the development, except for JUnit. |
-| :---- |
+> ⚠️ Apenas é permitido o uso de bibliotecas externas para testes com `JUnit`.
 
-# JSON Model (Phase 1\)
+---
 
-**Goal:** Develop classes to represent JSON values (model), allowing manipulation operations and serialization to strings (standard format).
+## ✅ Fase 1 — Modelo JSON (Representação + Serialização)
 
-The API of the library classes must allow programmers to:
+### Objetivo
+Desenvolver classes que representam os tipos de valor JSON, permitindo:
 
-* Instantiate JSON values ​​programmatically, creating and composing objects from the library classes;  
-* Perform filtering that produces new JSON Objects or Arrays without changing existing ones:  
-  * JSON Object → JSON Object  
-  * JSON Array → JSON Array  
-* Perform mapping operations on Arrays (*map*):  
-  * JSON Array → JSON Array  
-* Use *visitors*, to facilitate the developed of new features that involve traversing the structure recursively. This characteristic should be illustrated with functionalities to:  
-  * Validate whether all JSON objects are valid (keys with valid content and unique);  
-  * Check if all JSON Arrays contain values ​​of the same type (not Null)  
-* Serialize a model to a string, ensuring compatibility with the standard. (Formatting issues are not very relevant, as long as the output strings are valid JSON).
+- Criação programática de objetos JSON
+- Operações de filtragem e transformação
+- Serialização para strings JSON válidas
 
-# Inference (Phase 2\)
+### Funcionalidades Requeridas
+- Instanciar objetos `JsonValue` e compô-los
+- Filtrar:
+  - `JsonObject → JsonObject`
+  - `JsonArray → JsonArray`
+- Mapear:
+  - `JsonArray.map(...) → JsonArray`
+- Suportar o padrão Visitor:
+  - Validar objetos JSON (chaves válidas e únicas)
+  - Verificar se arrays são homogéneos (mesmo tipo, exceto `null`)
+- Serializar todos os tipos para strings válidas em formato JSON
 
-**Goal:** Develop a function that allows programmers to instantiate the JSON Model (Phase 1\) from Kotlin objects.
+---
 
-This feature should be based on reflection, and it is only required to support the following Kotlin types:
+## ✅ Fase 2 — Inferência com Reflexão
 
-* Int  
-* Double  
-* Boolean  
-* String  
-* List\< *supported type* \>  
-* Enums  
-* null  
-* data classes with properties whose type is supported  
-* maps (Map) that associate Strings (keys) to any of the above Kotlin elements
+### Objetivo
+Criar uma função que converte objetos Kotlin em estruturas da biblioteca JSON.
 
-The following presents an example scenario, where the object referenced by *course* would lead to the JSON structure on the right, presented in serialized format for convenience.   
- 
+### Requisitos
+- Suportar os seguintes tipos Kotlin:
+  - `Int`, `Double`, `Boolean`, `String`
+  - `Enum`
+  - `List<T>` (recursivo)
+  - `Map<String, T>`
+  - `data class` com propriedades suportadas
+  - `null`
 
-| data class Course(    val name: String,    val credits: Int,    val evaluation: List\<EvalItem\> ) data class EvalItem(    val name: String,    val percentage: Double,    val mandatory: Boolean,    val type: EvalType? ) enum class EvalType {    *TEST*, *PROJECT*, *EXAM* } | {  "name": "PA",  "credits": 6,  "evaluation": \[    {      "name": "quizzes",      "percentage": 0.2,      "mandatory": false,      "type": null    },    {      "name": "project",      "percentage": 0.8,      "mandatory": true,      "type": "PROJECT"    }  \] }  (example of serialized model inferred from course) |
-| :---- | :---- |
-| val course \= Course(    "PA", 6, *listOf*(        EvalItem("quizzes", .2, false, null),        EvalItem("project", .8, true, EvalType.*PROJECT*)    ) ) |  |
+### Exemplo
 
-| Attention: This feature should instantiate the model (Phase 1), instead of concatenating JSON strings directly. The advantage of this is to be able to post process the JSON in memory, e.g., filtering elements, etc. |
-| :---- |
+```kotlin
+data class Course(
+    val name: String,
+    val credits: Int,
+    val evaluation: List<EvalItem>
+)
 
-# General Requirements
+data class EvalItem(
+    val name: String,
+    val percentage: Double,
+    val mandatory: Boolean,
+    val type: EvalType?
+)
 
-* The library API must be documented using [KDoc](https://kotlinlang.org/docs/kotlin-doc.html);  
-    
-* All features must have corresponding [JUnit tests](https://junit.org/);
+enum class EvalType {
+    TEST, PROJECT, EXAM
+}
 
-* The library source should be published in a [GitHub](https://github.com/) repository, including:  
-  * A tutorial on how to use the library   
-  * A UML class diagram that represents the classes that model JSON  
-  * A release (JAR)
+val course = Course(
+    "PA", 6,
+    listOf(
+        EvalItem("quizzes", 0.2, false, null),
+        EvalItem("project", 0.8, true, EvalType.PROJECT)
+    )
+)
 
-# (Phase 3 \- To Be Defined)
-
-# 
+val json = JsonInfer.infer(course)
+println(json.serialize())

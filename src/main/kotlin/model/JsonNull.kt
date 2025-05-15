@@ -1,21 +1,22 @@
 package model
 
 import visitor.JsonVisitor
-import model.JsonValue
 
 /**
- * Representa um valor nulo no formato JSON
+ * Representa um valor nulo (null) no formato JSON.
+ * Utiliza o padrão Singleton.
  */
 object JsonNull : JsonValue() {
+
     /**
-     * Serializa o valor nulo para string no formato JSON
-     * @return String "null"
+     * Serializa este valor nulo para uma string no formato JSON.
+     * @return a string "null".
      */
     override fun serialize(): String = "null"
-    
+
     /**
-     * Implementação do padrão Visitor para JsonNull
-     * @param visitor O visitante a processar este valor
+     * Aceita um visitante para aplicar uma operação sobre este valor nulo JSON.
+     * @param visitor o visitante a aplicar.
      */
     override fun accept(visitor: JsonVisitor) {
         visitor.visitNull(this)

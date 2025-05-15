@@ -5,8 +5,15 @@ import visitor.JsonVisitor
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * Testes unitários para a classe `JsonObject`.
+ * Verifica criação, modificação, serialização e uso com visitantes.
+ */
 class JsonObjectTest {
 
+    /**
+     * Verifica a criação de um objeto vazio.
+     */
     @Test
     fun testCreateEmptyObject() {
         val obj = JsonObject()
@@ -14,6 +21,9 @@ class JsonObjectTest {
         assertEquals("{}", obj.serialize())
     }
 
+    /**
+     * Testa a inserção e recuperação de um valor no objeto.
+     */
     @Test
     fun testPutAndGetValue() {
         val obj = JsonObject()
@@ -23,6 +33,9 @@ class JsonObjectTest {
         assertEquals(1, obj.size())
     }
 
+    /**
+     * Testa o aumento do tamanho após inserções.
+     */
     @Test
     fun testSize() {
         val obj = JsonObject()
@@ -35,6 +48,10 @@ class JsonObjectTest {
         assertEquals(2, obj.size())
     }
 
+    /**
+     * Testa a serialização de um objeto com vários pares chave-valor.
+     * Garante que a saída contém os elementos esperados.
+     */
     @Test
     fun testSerialize() {
         val obj = JsonObject()
@@ -44,7 +61,6 @@ class JsonObjectTest {
         assertEquals("{\"nome\":\"Teste\"}", obj.serialize())
 
         obj.set("idade", JsonNumber(30.0))
-        // A ordem pode variar, então verificamos se contém as substrings esperadas
         val serialized = obj.serialize()
         assertTrue(serialized.startsWith("{"))
         assertTrue(serialized.endsWith("}"))
@@ -53,6 +69,9 @@ class JsonObjectTest {
         assertTrue(serialized.contains(","))
     }
 
+    /**
+     * Testa se o método `accept` invoca corretamente o visitante.
+     */
     @Test
     fun testAccept() {
         val obj = JsonObject()
@@ -76,6 +95,11 @@ class JsonObjectTest {
         assertTrue(mockVisitor.visitedObject)
     }
 
+    /**
+     * Testa a funcionalidade de `filter` num objeto JSON.
+     * Garante que apenas as chaves filtradas são mantidas
+     * e que o objeto original não é alterado.
+     */
     @Test
     fun testJsonObjectFilter() {
         val obj = JsonObject().apply {
@@ -86,9 +110,6 @@ class JsonObjectTest {
         assertEquals(1, filtered.size())
         assertNotNull(filtered.get("keep"))
         assertNull(filtered.get("remove"))
-        // Verifica se o original não foi mutado:
-        assertNotNull(obj.get("remove"))
+        assertNotNull(obj.get("remove")) // verifica imutabilidade
     }
-
 }
-

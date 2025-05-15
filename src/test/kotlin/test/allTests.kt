@@ -14,6 +14,11 @@ import test.JsonStringTests
 import test.JsonInferTests
 import test.JsonInstantiationTests
 
+/**
+ * Suite de testes JUnit que agrupa todos os testes da biblioteca JSON.
+ * Permite executar facilmente todos os testes da Fase 1, Fase 2,
+ * dos visitantes e dos tipos JSON básicos.
+ */
 @RunWith(Suite::class)
 @SuiteClasses(
     TestsPhase1::class,

@@ -1,81 +1,83 @@
-# JSON Visitor Package Documentation
+# Documentação do Pacote `visitor`
 
-## Overview
-The visitor package implements the Visitor pattern for JSON structure traversal and validation operations.
+## Visão Geral
 
-## Interface
+O pacote `visitor` implementa o padrão Visitor para percorrer e validar estruturas JSON. Este padrão permite separar a lógica de processamento dos dados propriamente ditos, facilitando a extensão de comportamentos (como validações ou transformações) sem modificar as classes do modelo JSON.
 
-### JsonVisitor
-Base interface for all JSON visitors.
+---
 
-#### Methods
-- `fun visitObject(jsonObject: JsonObject)`
-  - Processes JSON object nodes
-- `fun visitArray(jsonArray: JsonArray)`
-  - Processes JSON array nodes
-- `fun visitString(jsonString: JsonString)`
-  - Processes JSON string values
-- `fun visitNumber(jsonNumber: JsonNumber)`
-  - Processes JSON numeric values
-- `fun visitBoolean(jsonBoolean: JsonBoolean)`
-  - Processes JSON boolean values
-- `fun visitNull(jsonNull: JsonNull)`
-  - Processes JSON null values
+## Interface Base
 
-## Concrete Visitors
+### `JsonVisitor`
+Interface que define os métodos de visita para cada tipo de valor JSON.
 
-### ArrayHomogeneityVisitor
-Verifies that arrays contain elements of the same type.
+#### Métodos
+- `visitObject(jsonObject: JsonObject)`
+  - Visita objetos JSON.
+- `visitArray(jsonArray: JsonArray)`
+  - Visita arrays JSON.
+- `visitString(jsonString: JsonString)`
+  - Visita valores string.
+- `visitNumber(jsonNumber: JsonNumber)`
+  - Visita valores numéricos.
+- `visitBoolean(jsonBoolean: JsonBoolean)`
+  - Visita valores booleanos.
+- `visitNull(jsonNull: JsonNull)`
+  - Visita valores nulos.
 
-#### Properties
+---
+
+## Visitantes Concretos
+
+### `ArrayHomogeneityVisitor`
+Verifica se todos os elementos de um array JSON são do mesmo tipo (exceto nulos).
+
+#### Propriedades
 - `private var currentType: Class<*>?`
-  - Tracks the current element type
-- `private var isHomogeneous: Boolean`
-  - Stores homogeneity state
+  - Regista o tipo do primeiro elemento do array.
+- `private var homogeneous: Boolean`
+  - Indica se os elementos são homogéneos.
 
-#### Methods
+#### Métodos
 - `fun isHomogeneous(): Boolean`
-  - Returns array homogeneity status
-- `private fun checkType(type: Class<*>)`
-  - Validates type consistency
+  - Devolve `true` se todos os elementos são do mesmo tipo.
 
-#### Visit Implementations
-- `visitObject`: Ignores objects (don't affect homogeneity)
-- `visitArray`: Recursively checks nested arrays
-- `visitString`, `visitNumber`, `visitBoolean`, `visitNull`: Check type consistency
+#### Implementação de visitas
+- `visitArray`: percorre os elementos e verifica se o tipo é consistente.
+- Os outros métodos (`visitObject`, `visitString`, etc.): não afetam a verificação.
 
-### ValidatorVisitor
-Validates JSON structure integrity.
+---
 
-#### Properties
-- `private var isValid: Boolean`
-  - Tracks validation state
-- `private val visitedObjects: MutableSet<JsonObject>`
-  - Detects circular references
+### `ValidatorVisitor`
+Valida a integridade estrutural de um modelo JSON.
 
-#### Methods
+#### Propriedades
+- `private var valid: Boolean`
+  - Indica se o modelo é considerado válido.
+
+#### Métodos
 - `fun isValid(): Boolean`
-  - Returns validation status
+  - Devolve `true` se o modelo passou na validação.
 
-#### Visit Implementations
-- `visitObject`:
-  - Checks for circular references
-  - Validates key names (non-empty)
-  - Traverses object properties
-- `visitArray`: Traverses array elements
-- Other visit methods: No additional validation needed
+#### Implementação de visitas
+- `visitObject`: verifica se todas as chaves são não vazias e visita recursivamente os valores.
+- `visitArray`: visita recursivamente todos os elementos do array.
+- Os restantes métodos (`visitString`, `visitNumber`, etc.): são considerados sempre válidos.
 
-## Usage Example
+---
+
+## Exemplo de Utilização
+
 ```kotlin
-// Checking array homogeneity
+// Verificar homogeneidade de um array
 val array = JsonArray()
 array.add(JsonNumber(1))
 array.add(JsonNumber(2))
 val homogeneityVisitor = ArrayHomogeneityVisitor()
 array.accept(homogeneityVisitor)
-val isHomogeneous = homogeneityVisitor.isHomogeneous()
+val ehHomogeneo = homogeneityVisitor.isHomogeneous()
 
-// Validating JSON structure
+// Validar uma estrutura JSON
 val validator = ValidatorVisitor()
 jsonValue.accept(validator)
-val isValid = validator.isValid()
+val ehValido = validator.isValid()

@@ -1,159 +1,107 @@
-# Test Package Documentation
+# Documentação dos Testes (`test`)
 
-## Overview
-The test package contains comprehensive test suites for validating JSON functionality, including value handling, serialization, inference, and HTTP endpoints.
+## Visão Geral
 
-## Test Classes
+O pacote `test` contém um conjunto completo de testes para validar o funcionamento da biblioteca JSON: criação de valores, serialização, visitantes, inferência e integração com o servidor HTTP.
 
-### TestsPhase1
-Tests basic JSON functionality and operations.
+---
 
-#### Test Methods
-- `testBasicValues()`
-  - Tests serialization of basic JSON types (String, Number, Boolean, Null)
-- `testArrayOperations()`
-  - Validates JSON array manipulation and serialization
-- `testObjectOperations()`
-  - Tests JSON object property management
-- `testComplexStructure()`
-  - Verifies nested JSON structures
-- `testObjectFilter()`
-  - Tests object property filtering
-- `testArrayFilter()`
-  - Validates array element filtering
-- `testArrayMap()`
-  - Tests array transformation operations
-- `testValidatorVisitor()`
-  - Validates JSON structure using visitor pattern
+## Conjuntos de Testes
 
-### TestsPhase2
-Tests JSON inference functionality.
+### `TestsPhase1`
+Testes básicos da Fase 1: serialização e manipulação de estruturas JSON.
 
-#### Test Methods
-- `testInferBasicTypes()`
-  - Tests inference of primitive types
-- `testInferEnum()`
-  - Validates enum value inference
-- `testInferList()`
-  - Tests list to JSON array conversion
-- `testInferMap()`
-  - Validates map to JSON object conversion
-- `testInferSimpleDataClass()`
-  - Tests basic data class inference
-- `testInferComplexDataClass()`
-  - Validates nested data structure inference
-- `testInferWithNulls()`
-  - Tests null value handling in inference
+#### Métodos Testados
+- `testBasicValues` — Serialização de tipos básicos: string, número, booleano e nulo.
 
-### TestsPhase3
-Tests HTTP endpoint functionality.
+---
 
-#### Properties
-- `server: HttpServer?`
-- `port: Int`
+### `TestsPhase2`
+Testes simples relacionados com a construção manual de objetos JSON.
 
-#### Setup/Teardown
-- `setup()`
-  - Initializes test environment
-- `tearDown()`
-  - Cleans up server resources
+#### Métodos Testados
+- `testComplexStructures` — Verifica a criação e serialização de um `JsonObject`.
 
-#### Test Methods
-- `testBasicEndpoints()`
-  - Tests basic HTTP endpoints
-- `testPathVariables()`
-  - Validates path parameter handling
-- `testQueryParameters()`
-  - Tests query parameter processing
-- `testComplexResponse()`
-  - Validates complex JSON responses
-- `testInvalidPath()`
-  - Tests error handling for invalid paths
-- `testInvalidParameters()`
-  - Validates parameter validation
+---
 
-### JsonBooleanTests
-Tests JSON boolean value handling.
+### `JsonObjectTest`
+Testa as funcionalidades de objetos JSON.
 
-#### Test Methods
-- `testBooleanSerialization()`
-  - Validates boolean serialization
+#### Métodos Testados
+- `testCreateEmptyObject` — Criação de objeto vazio.
+- `testPutAndGetValue` — Inserção e leitura de chaves/valores.
+- `testSize` — Contagem de propriedades.
+- `testSerialize` — Serialização completa.
+- `testAccept` — Aplicação de visitante.
+- `testJsonObjectFilter` — Filtragem de propriedades.
 
-### JsonNullTests
-Tests JSON null value handling.
+---
 
-#### Test Methods
-- `testNullSerialization()`
-  - Validates null value serialization
+### `JsonArrayTest`
+Testes de operações sobre arrays JSON.
 
-### JsonObjectTest
-Tests JSON object operations.
+#### Métodos Testados
+- `testCreateEmptyArray` — Criação de array vazio.
+- `testAddAndGetElement` — Inserção e acesso a elementos.
+- `testSetElement` — Modificação de elementos.
+- `testSize` — Verificação de tamanho.
+- `testFilter` — Filtragem por tipo.
+- `testMap` — Transformações dos elementos.
+- `testSerialize` — Serialização para string.
+- `testAccept` — Suporte ao padrão Visitor.
 
-#### Test Methods
-- `testCreateEmptyObject()`
-  - Tests empty object creation
-- `testPutAndGetValue()`
-  - Validates property management
-- `testSize()`
-  - Tests object size tracking
-- `testSerialize()`
-  - Validates object serialization
-- `testAccept()`
-  - Tests visitor pattern implementation
-- `testJsonObjectFilter()`
-  - Validates object filtering
+---
 
-### JsonArrayTest
-Tests JSON array operations.
+### `JsonStringTests`, `JsonNumberTests`, `JsonBooleanTests`, `JsonNullTests`
+Testes de tipos primitivos JSON.
 
-#### Test Methods
-- `testCreateEmptyArray()`
-  - Tests empty array creation
-- `testAddAndGetElement()`
-  - Validates element management
-- `testSetElement()`
-  - Tests element modification
-- `testSize()`
-  - Validates array size tracking
-- `testFilter()`
-  - Tests array filtering
-- `testMap()`
-  - Validates array transformation
-- `testSerialize()`
-  - Tests array serialization
-- `testAccept()`
-  - Validates visitor pattern implementation
+#### Métodos Testados
+- `testStringValue` — Verifica valor e serialização de `JsonString`.
+- `testNumberValue` — Verifica valores inteiros e decimais.
+- `testBooleanValue` — Serialização de booleanos.
+- `testNullSerialization` — Serialização de valor nulo.
 
-### JsonInferTests
-Tests JSON inference functionality.
+---
 
-#### Test Methods
-- `testInferNull()`
-  - Tests null inference
-- `testInferExistingJsonValue()`
-  - Validates existing JSON value handling
-- `testInferPrimitiveTypes()`
-  - Tests primitive type inference
-- `testInferEnum()`
-  - Validates enum inference
-- `testInferList()`
-  - Tests list inference
-- `testInferMap()`
-  - Validates map inference
-- `testInferDataClassSimple()`
-  - Tests simple data class inference
-- `testInferDataClassNested()`
-  - Validates nested data class inference
-- `testInferExampleCourse()`
-  - Tests complex course structure inference
+### `JsonInstantiationTests`
+Testes de instanciamento manual dos tipos básicos JSON.
 
-### ValidatorVisitorTests
-Tests JSON structure validation.
+#### Métodos Testados
+- `testInstantiation` — Criação de `JsonString`, `JsonNumber`, `JsonBoolean`.
 
-#### Test Methods
-- `testValidObjectNoEmptyKeys()`
-  - Tests valid object validation
-- `testObjectWithEmptyKeyIsInvalid()`
-  - Validates empty key detection
-- `testNestedObjectsTraversal()`
-  - Tests nested structure validation
+---
+
+### `JsonInferTests`
+Testes sobre tipo de dados armazenado em `JsonObject`.
+
+#### Métodos Testados
+- `testBasicInference` — Verifica tipo interno de `JsonString`.
+
+---
+
+### `ValidatorVisitorTests`
+Testes de validação de objetos JSON.
+
+#### Métodos Testados
+- `testValidObject` — Verifica que objetos com chaves válidas são aceites.
+
+---
+
+### `ArrayHomogeneityVisitorTests`
+Testes de verificação de homogeneidade em arrays.
+
+#### Métodos Testados
+- `testHomogeneousArray` — Garante que todos os elementos são do mesmo tipo.
+
+---
+
+### `AllTests`
+Agrupador que executa todos os testes do projeto.
+
+---
+
+## Observações
+
+- Os testes utilizam **JUnit 4**.
+- Cada classe de teste cobre funcionalidades específicas do modelo ou da framework.
+- Os testes de integração HTTP estão na pasta `getjson`.

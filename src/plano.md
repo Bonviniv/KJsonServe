@@ -1,105 +1,78 @@
-# 🔍 Resumo dos Conceitos que o prof falou em aula
+# Plano e Organização do Projeto
 
-## 1. Serialização
-- Transformar uma estrutura de dados (como objetos em memória) para uma representação textual que possa ser salva ou transmitida.
-- **Exemplo**: Converter um objeto Kotlin para uma string JSON válida.
+## 🔍 Conceitos Fundamentais
 
-## 2. Representação
-- Refere-se à estrutura em memória dos dados (neste caso, classes como `JsonObject`, `JsonArray`, etc.).
-- É o modelo interno usado para manipular JSON.
+### 1. Serialização
+Transformação de uma estrutura de dados (em memória) para uma representação textual padronizada (neste caso, JSON).  
+**Exemplo:** Converter um objeto Kotlin para uma `String` em formato JSON.
 
-## 3. Visualização
-- A apresentação dos dados para o utilizador final, geralmente em interfaces gráficas.
-- **Não será utilizada neste projeto.**
+### 2. Representação
+Estrutura de classes que modela o conteúdo JSON na aplicação, como `JsonObject`, `JsonArray`, `JsonString`, etc.
 
-> 🟡 **Importante**: o projeto foca em **representação** e **serialização**, **sem visualização**.
+### 3. Visualização
+Exibição dos dados ao utilizador final (GUI, Web, etc.).  
+**Nota:** Não faz parte deste projeto.
+
+> **Resumo:** Este projeto foca-se em **representação** e **serialização**, sem visualização.
 
 ---
 
-# 🧱 Estrutura do Projeto Passo a Passo
+## 🧱 Estrutura do Projeto por Fases
 
 ---
 
 ## ✅ Fase 1 – Modelo JSON (Representação + Serialização)
 
-### 1. Criar Hierarquia de Classes para o Modelo
-Cria uma `sealed class` base `JsonValue`, com subclasses:
-- `JsonObject` – mapa de chaves (strings) para valores JSON.
-- `JsonArray` – lista de `JsonValue`.
-- `JsonString`
-- `JsonNumber`
-- `JsonBoolean`
-- `JsonNull`
+### Objetivos
+- Criar hierarquia de classes que representa os tipos JSON.
+- Implementar métodos de manipulação e serialização.
 
-### 2. Implementar Métodos Básicos
-Cada tipo precisa de:
-- Um método `serialize()` que retorna uma `String` no formato JSON padrão.
-- Métodos para acessar/modificar elementos (por exemplo, `get`, `set`, etc.).
+### Estrutura
+- `JsonValue` (classe abstrata base)
+- Subclasses:
+  - `JsonObject` — mapa de chaves para valores JSON.
+  - `JsonArray` — lista de valores JSON.
+  - `JsonString`
+  - `JsonNumber`
+  - `JsonBoolean`
+  - `JsonNull`
 
-### 3. Filtragem
-- `JsonObject.filter(predicate: (String, JsonValue) -> Boolean): JsonObject`
-- `JsonArray.filter(predicate: (JsonValue) -> Boolean): JsonArray`
-
-### 4. Mapeamento
-- `JsonArray.map(transform: (JsonValue) -> JsonValue): JsonArray`
-
-### 5. Visitor Pattern
-Cria uma interface `JsonVisitor` com um método para cada tipo (`visitObject`, `visitArray`, etc.).
-
-Utiliza visitantes para implementar:
-- Validação de `JsonObject` (chaves únicas, valores válidos).
-- Verificação de homogeneidade de `JsonArray` (mesmo tipo, excluindo `JsonNull`).
-
-### 6. Serialização
-- Cada tipo implementa um `serialize(): String` conforme a [especificação JSON](https://www.json.org/).
+### Funcionalidades Implementadas
+- `serialize(): String` para cada tipo, gerando JSON válido.
+- Métodos auxiliares: `add`, `get`, `set`, `size`, etc.
+- `filter`:
+  - `JsonObject.filter(predicate: (String, JsonValue) -> Boolean)`
+  - `JsonArray.filter(predicate: (JsonValue) -> Boolean)`
+- `map`:
+  - `JsonArray.map(transform: (JsonValue) -> JsonValue)`
+- **Padrão Visitor**:
+  - Interface `JsonVisitor` com métodos para cada tipo.
+  - Visitantes:
+    - `ValidatorVisitor`: valida chaves e estrutura.
+    - `ArrayHomogeneityVisitor`: verifica homogeneidade de tipos num `JsonArray`.
 
 ---
 
 ## ✅ Fase 2 – Inferência com Reflexão
 
-### 1. Função Principal
-- `fun infer(value: Any?): JsonValue` – transforma objetos Kotlin em estruturas `JsonValue`.
+### Objetivo
+Instanciar o modelo JSON a partir de estruturas Kotlin usando reflexão.
 
-### 2. Tipos Suportados
-- Primitivos (`Int`, `Double`, `Boolean`, `String`)
-- `List<T>`
+### Função Principal
+- `fun infer(value: Any?): JsonValue`
+
+### Tipos Suportados
+- Primitivos: `Int`, `Double`, `Boolean`, `String`
 - `Enum`
+- `List<T>` (recursiva)
 - `Map<String, T>`
-- `Data classes`
+- `data class` com propriedades suportadas
 
-### 3. Uso de Reflexão
-- Usar `KClass` e `memberProperties` para acessar atributos de data classes.
-- Converter cada propriedade recursivamente para `JsonValue`.
+### Implementação
+- Uso de `KClass` e `memberProperties` para ler propriedades de data classes.
+- Conversão recursiva para `JsonValue`.
 
-### 4. Exemplo
-Transformar a instância `Course(...)` no JSON conforme o exemplo no enunciado.
-
-### 5. Validação
-- Garantir que o objeto inferido seja um `JsonObject` e mantenha a estrutura conforme as regras.
-
----
-
-## ✅ Fase 3 – (A Definir)
-Aguardar instruções futuras. Provavelmente alguma aplicação prática da biblioteca.
-
----
-
-# 🧪 Testes & Documentação
-
-- `KDoc` para todas as classes e métodos.
-- `JUnit` para cada funcionalidade:
-    - Serialização de cada tipo
-    - Filtragem e mapeamento
-    - Uso de visitors
-    - Inferência com diferentes tipos
-
----
-
-# 📁 Repositório GitHub
-[https://github.com/Bonviniv/ProjetoPA](https://github.com/Bonviniv/ProjetoPA)
-
-Inclui:
-- Código fonte
-- Diagrama UML com as classes JSON
-- JAR com release
-- Tutorial de uso básico com exemplos
+### Exemplo
+```kotlin
+val course = Course(...)
+val json = JsonInfer.infer(course)

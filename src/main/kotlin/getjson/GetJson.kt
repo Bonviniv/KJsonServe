@@ -1,4 +1,3 @@
-
 package getjson
 
 import com.sun.net.httpserver.HttpExchange
@@ -15,6 +14,12 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.findAnnotation
 
+/**
+ * Microframework HTTP para expor controladores Kotlin como endpoints REST JSON.
+ * Esta classe permite definir rotas HTTP GET usando anotações (`@Mapping`, `@Path`, `@Param`)
+ * e converte automaticamente os resultados Kotlin em JSON através do `JsonInfer`.
+ * @param controllerClasses Lista de classes de controladores anotadas.
+ */
 class GetJson(vararg controllerClasses: KClass<*>) {
 
     private data class Route(
@@ -26,6 +31,7 @@ class GetJson(vararg controllerClasses: KClass<*>) {
     private val routes = mutableListOf<Route>()
 
     init {
+        // Regista os métodos anotados com @Mapping
         for (ctrlClass in controllerClasses) {
             val classMapping = ctrlClass.findAnnotation<Mapping>()?.value ?: continue
             val instance = ctrlClass.createInstance()
@@ -38,16 +44,24 @@ class GetJson(vararg controllerClasses: KClass<*>) {
         }
     }
 
+    /**
+     * Inicia o servidor HTTP na porta especificada.
+     * @param port A porta onde o servidor ficará a escutar.
+     * @return instância de `HttpServer` em execução.
+     */
     fun start(port: Int): HttpServer {
         val server = HttpServer.create(InetSocketAddress(port), 0)
         server.createContext("/") { exchange ->
             handle(exchange)
         }
         server.start()
-        println("🚀 GetJson listening on port ${server.address.port}")
+        println("🚀 GetJson a escutar na porta ${server.address.port}")
         return server
     }
 
+    /**
+     * Processa uma requisição HTTP e despacha-a para o método apropriado.
+     */
     private fun handle(exchange: HttpExchange) {
         val requestPath = exchange.requestURI.path
         val route = routes.firstOrNull { match(it.rawPath, requestPath) }
@@ -75,6 +89,9 @@ class GetJson(vararg controllerClasses: KClass<*>) {
         }
     }
 
+    /**
+     * Compara um padrão de rota com o caminho da requisição, suportando variáveis `{}`.
+     */
     private fun match(routePattern: String, path: String): Boolean {
         val routeParts = routePattern.trim('/').split('/')
         val pathParts = path.trim('/').split('/')
@@ -85,6 +102,9 @@ class GetJson(vararg controllerClasses: KClass<*>) {
         }
     }
 
+    /**
+     * Constrói a lista de argumentos a passar ao método, com base em `@Path` e `@Param`.
+     */
     private fun buildArgs(exchange: HttpExchange, route: Route): List<Any?> {
         val uri = exchange.requestURI
         val actualParts = uri.path.trim('/').split('/')
@@ -123,6 +143,12 @@ class GetJson(vararg controllerClasses: KClass<*>) {
         return args
     }
 
+    /**
+     * Converte uma string da query ou path para o tipo esperado.
+     * @param raw valor textual a converter
+     * @param target tipo de destino (String, Int, Double, Boolean)
+     * @return valor convertido
+     */
     private fun convert(raw: String?, target: KClass<*>): Any? {
         if (raw == null) return null
         return when (target) {
@@ -130,7 +156,7 @@ class GetJson(vararg controllerClasses: KClass<*>) {
             Int::class -> raw.toInt()
             Double::class -> raw.toDouble()
             Boolean::class -> raw.toBoolean()
-            else -> throw IllegalArgumentException("Unsupported parameter type: $target")
+            else -> throw IllegalArgumentException("Tipo de parâmetro não suportado: $target")
         }
     }
 }

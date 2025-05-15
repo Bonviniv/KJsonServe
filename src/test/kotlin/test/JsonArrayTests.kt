@@ -6,10 +6,15 @@ import org.junit.Assert.*
 import org.junit.Test
 
 /**
- * Testes para JsonArray: criação, adição, filtro, mapeamento, serialização e visitor.
+ * Testes unitários para a classe `JsonArray`.
+ * Verifica operações como adição, substituição, filtragem, mapeamento,
+ * serialização e interação com visitantes.
  */
 class JsonArrayTest {
 
+    /**
+     * Verifica a criação de um array vazio.
+     */
     @Test
     fun testCreateEmptyArray() {
         val array = JsonArray()
@@ -17,6 +22,9 @@ class JsonArrayTest {
         assertEquals("[]", array.serialize())
     }
 
+    /**
+     * Testa a adição e leitura de um elemento no array.
+     */
     @Test
     fun testAddAndGetElement() {
         val array = JsonArray()
@@ -27,6 +35,9 @@ class JsonArrayTest {
         assertEquals(stringValue, array.get(0))
     }
 
+    /**
+     * Verifica se é possível substituir um elemento existente.
+     */
     @Test
     fun testSetElement() {
         val array = JsonArray()
@@ -36,6 +47,9 @@ class JsonArrayTest {
         assertEquals(JsonString("modificado"), array.get(0))
     }
 
+    /**
+     * Testa o tamanho do array após inserções.
+     */
     @Test
     fun testSize() {
         val array = JsonArray()
@@ -48,6 +62,9 @@ class JsonArrayTest {
         assertEquals(2, array.size())
     }
 
+    /**
+     * Testa a filtragem de elementos do array.
+     */
     @Test
     fun testFilter() {
         val array = JsonArray()
@@ -62,6 +79,10 @@ class JsonArrayTest {
         assertEquals(10.0, (filtered.get(0) as JsonNumber).value)
     }
 
+    /**
+     * Testa o mapeamento de elementos do array.
+     * Cada número é multiplicado por 2.
+     */
     @Test
     fun testMap() {
         val array = JsonArray()
@@ -77,6 +98,9 @@ class JsonArrayTest {
         assertEquals(4.0, (mapped.get(1) as JsonNumber).value)
     }
 
+    /**
+     * Verifica se a serialização do array JSON está correta.
+     */
     @Test
     fun testSerialize() {
         val array = JsonArray()
@@ -95,6 +119,9 @@ class JsonArrayTest {
         assertEquals("[\"teste\",42,true,null]", array.serialize())
     }
 
+    /**
+     * Testa a aceitação de um visitante sobre o array.
+     */
     @Test
     fun testAccept() {
         val array = JsonArray()

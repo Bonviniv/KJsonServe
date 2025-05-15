@@ -1,43 +1,54 @@
-# PA_projeto
-**Projeto de PA (2025)**  
-*Vitor Barbosa (105248) e Paulo Francisco Pinto (128962)*
+# Projeto de Programação Avançada — JSON & GetJson Framework
+
+**Mestrado em Engenharia Informática – ISCTE 2024/2025**  
+Autores: **Vítor Barbosa (105248)** e **Paulo Francisco Pinto (128962)**
 
 ---
 
-# JSON Manipulation Library & Mini HTTP Framework (`GetJson`)
+## 📦 Visão Geral
 
-Biblioteca Kotlin para geração e manipulação de JSON em memória, sem dependências externas (exceto JUnit para testes) e com suporte a APIs HTTP simples via anotação.
+Este projeto implementa:
 
----
-
-## 📖 Visão Geral
-
-Este projeto oferece:
-
-### ✅ JSON In-Memory Model
-- `JsonObject`, `JsonArray`, `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`.
-- Suporte a serialização JSON padrão.
-- Operações funcionais: `filter`, `map`, `*` (interseção), etc.
-- Validação por Visitor:
-  - `ValidatorVisitor`: valida unicidade e formato das chaves.
-  - `ArrayHomogeneityVisitor`: valida homogeneidade de tipos num array.
-
-### ✅ Inferência via Reflexão
-- `JsonInfer.infer(...)`: converte objetos Kotlin em modelos JSON usando reflexão.
-- Suporta: primitivos, `List`, `Map`, `Enum`, `Data class`, `null`.
-
-### ✅ Mini Framework `GetJson`
-- Framework de rotas HTTP `GET` via anotação:
-  - `@Mapping`: mapeia classes e métodos para endpoints.
-  - `@Path`: mapeia partes da URL (ex: `/path/{id}`).
-  - `@Param`: extrai parâmetros da query string (`?n=1&text=foo`).
-- Conversão automática do resultado para JSON com `JsonInfer`.
+- Uma **biblioteca JSON em Kotlin**, que permite representar, manipular e serializar estruturas JSON inteiramente em memória.
+- Um **microframework HTTP (`GetJson`)**, que expõe endpoints `GET` com retorno automático em JSON a partir de métodos Kotlin, usando anotações personalizadas.
 
 ---
 
-## ⚙️ Instalação (Maven)
+## ✅ Módulo 1 — Biblioteca JSON (Modelo em Memória)
 
-Adicione ao seu `pom.xml`:
+- Hierarquia de tipos: `JsonObject`, `JsonArray`, `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`.
+- Suporte a serialização para o formato JSON padrão (`serialize()`).
+- Operações funcionais:
+  - `filter`, `map`, `times` (interseção de objetos)
+- Validações via padrão Visitor:
+  - `ValidatorVisitor`: verifica se as chaves dos objetos são válidas.
+  - `ArrayHomogeneityVisitor`: verifica se os elementos de um array são do mesmo tipo (ignorando `null`).
+
+---
+
+## 🧠 Módulo 2 — Inferência com Reflexão
+
+- Função `JsonInfer.infer(value: Any?)`:
+  - Converte automaticamente objetos Kotlin em `JsonValue`.
+- Suporta:
+  - Tipos primitivos (`Int`, `Double`, `Boolean`, `String`)
+  - `List<T>`, `Map<String, T>`
+  - `Enum`, `null`
+  - `data class` com campos de tipos suportados
+
+---
+
+## 🌐 Módulo 3 — Microframework HTTP `GetJson`
+
+- Framework simples para criação de endpoints `GET` com anotações:
+  - `@Mapping("rota")`: define o caminho da rota
+  - `@Path`: parâmetros dinâmicos no caminho (e.g. `/user/{id}`)
+  - `@Param`: parâmetros da query string (`?nome=joao`)
+- Conversão automática da resposta para JSON usando `JsonInfer`.
+
+---
+
+## ⚙️ Instalação via Maven
 
 ```xml
 <properties>
@@ -45,21 +56,18 @@ Adicione ao seu `pom.xml`:
 </properties>
 
 <dependencies>
-  <!-- Kotlin Standard Library -->
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-stdlib</artifactId>
     <version>${kotlin.version}</version>
   </dependency>
 
-  <!-- Kotlin Reflection (para inferência) -->
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-reflect</artifactId>
     <version>${kotlin.version}</version>
   </dependency>
 
-  <!-- JUnit para testes -->
   <dependency>
     <groupId>junit</groupId>
     <artifactId>junit</artifactId>
@@ -71,116 +79,108 @@ Adicione ao seu `pom.xml`:
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Exemplos de Utilização
 
-### 1. Criação Manual
+### 1. Criação Manual de JSON
 ```kotlin
-import model.*
-
 val obj = JsonObject().apply {
-  set("nome", JsonString("Alice"))
-  set("idade", JsonNumber(30.0))
-  set("ativo", JsonBoolean(true))
+    set("nome", JsonString("Alice"))
+    set("idade", JsonNumber(30.0))
+    set("ativo", JsonBoolean(true))
 }
 println(obj.serialize())
-// Saída: {"nome":"Alice","idade":30,"ativo":true}
+// {"nome":"Alice","idade":30,"ativo":true}
 ```
 
 ### 2. Filtrar e Mapear Arrays
 ```kotlin
 val arr = JsonArray().apply {
-  add(JsonNumber(1.0))
-  add(JsonNumber(2.0))
-  add(JsonNumber(3.0))
+    add(JsonNumber(1.0))
+    add(JsonNumber(2.0))
+    add(JsonNumber(3.0))
 }
 
-val even = arr.filter { (it as JsonNumber).value.toDouble() % 2 == 0.0 }
-println(even.serialize()) // [2]
+val pares = arr.filter { (it as JsonNumber).value.toDouble() % 2 == 0.0 }
+println(pares.serialize()) // [2]
 
-val doubled = arr.map {
-  if (it is JsonNumber) JsonNumber((it.value as Number).toDouble() * 2) else it
+val duplicado = arr.map {
+    if (it is JsonNumber) JsonNumber((it.value as Number).toDouble() * 2) else it
 }
-println(doubled.serialize()) // [2,4,6]
+println(duplicado.serialize()) // [2, 4, 6]
 ```
 
 ### 3. Uso de Visitors
 ```kotlin
 val validator = ValidatorVisitor()
 obj.accept(validator)
-println("Válido? ${validator.isValid()}")
+println("É válido? ${validator.isValid()}")
 
 val homog = ArrayHomogeneityVisitor()
 arr.accept(homog)
-println("Homogêneo? ${homog.isHomogeneous()}")
+println("É homogéneo? ${homog.isHomogeneous()}")
 ```
 
-### 4. Inferência via Reflexão
+### 4. Inferência com Kotlin
 ```kotlin
 data class Person(val name: String, val age: Int)
-val inferred = JsonInfer.infer(Person("Bob", 25))
-println(inferred.serialize())
-// {"name":"Bob","age":25}
+
+val json = JsonInfer.infer(Person("João", 25))
+println(json.serialize())
+// {"name":"João","age":25}
 ```
 
-### 5. Framework HTTP `GetJson`
+### 5. Servidor HTTP com GetJson
 ```kotlin
 @Mapping("api")
 class Controller {
-  @Mapping("ints")
-  fun demo(): List<Int> = listOf(1, 2, 3)
+    @Mapping("ints")
+    fun demo(): List<Int> = listOf(1, 2, 3)
 
-  @Mapping("path/{id}")
-  fun dynamic(@Path id: String): String = "$id!"
+    @Mapping("path/{id}")
+    fun dynamic(@Path id: String): String = "$id!"
 
-  @Mapping("args")
-  fun args(@Param("n") n: Int, @Param("text") text: String): Map<String, String> =
-    mapOf(text to text.repeat(n))
+    @Mapping("args")
+    fun args(@Param("n") n: Int, @Param("text") text: String): Map<String, String> =
+        mapOf(text to text.repeat(n))
 }
 
-// Lançar servidor
+// Iniciar servidor
 val app = GetJson(Controller::class)
 app.start(8080)
 ```
 
 ---
 
-## 📑 API Reference
+## 📚 Referência da API
 
-### `JsonValue` (abstract)
-- `serialize(): String`
-- `accept(visitor: JsonVisitor)`
+### JsonValue
+- `serialize()`, `accept(visitor)`
 
-### `JsonObject`
-- `set(key: String, value: JsonValue)`
-- `get(key: String): JsonValue?`
-- `filter((String, JsonValue) -> Boolean): JsonObject`
-- `operator fun times(other: JsonObject): JsonObject`
-- `getKeys(): Set<String>`
+### JsonObject
+- `set`, `get`, `filter`, `times`, `getKeys`
 
-### `JsonArray`
-- `add(value: JsonValue)`
-- `get(index: Int): JsonValue`
-- `size(): Int`
-- `filter((JsonValue) -> Boolean): JsonArray`
-- `map((JsonValue) -> JsonValue): JsonArray`
+### JsonArray
+- `add`, `get`, `size`, `filter`, `map`
 
 ### Visitors
 - `ValidatorVisitor.isValid()`
 - `ArrayHomogeneityVisitor.isHomogeneous()`
 
 ### Inferência
-- `JsonInfer.infer(value: Any?): JsonValue`
+- `JsonInfer.infer(value: Any?)`
 
 ---
 
-## 🧪 Testes
+## ✅ Testes Automatizados
+
 ```bash
 mvn test
 ```
 
 ---
 
-## 🧰 Build JAR
+## 📦 Compilar JAR
+
 ```bash
 mvn clean package
 mv target/ProjetoPA-1.0.0.jar release/ProjetoPA-1.0.0.jar
@@ -188,7 +188,7 @@ mv target/ProjetoPA-1.0.0.jar release/ProjetoPA-1.0.0.jar
 
 ---
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 ProjetoPA/
@@ -209,7 +209,8 @@ ProjetoPA/
 
 ## 👥 Autores
 
-- Vítor Barbosa (105248)
-- Paulo Francisco Pinto (128962)
+- **Vítor Barbosa** (105248)
+- **Paulo Francisco Pinto** (128962)
 
-Projeto desenvolvido no âmbito da unidade curricular **Programação Avançada** (Mestrado em Engenharia Informática – ISCTE 2024/2025).
+Projeto realizado no âmbito da unidade curricular **Programação Avançada**,  
+**Mestrado em Engenharia Informática — ISCTE, 2024/2025**
