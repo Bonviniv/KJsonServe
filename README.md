@@ -192,17 +192,41 @@ mv target/ProjetoPA-1.0.0.jar release/ProjetoPA-1.0.0.jar
 
 ```
 ProjetoPA/
-├── src/
-│   ├── main/kotlin/
-│   │   ├── model/
-│   │   ├── visitor/
-│   │   ├── inference/
-│   │   └── getjson/
-│   └── test/kotlin/
-│       └── getjson/
-├── docs/diagrams/JsonModelDiagram.png
-├── release/ProjetoPA-1.0.0.jar
-└── pom.xml
+├───.idea
+│   └───codeStyles
+├───docs
+│   └───diagrams
+├───lib
+├───release
+├───src
+│   ├───main
+│   │   └───kotlin
+│   │       ├───getjson
+│   │       │   └───annotations
+│   │       ├───inference
+│   │       ├───model
+│   │       └───visitor
+│   └───test
+│       └───kotlin
+│           ├───getjson
+│           ├───Jsons
+│           └───test
+└───target
+    ├───classes
+    │   ├───getjson
+    │   │   └───annotations
+    │   ├───inference
+    │   ├───model
+    │   └───visitor
+    ├───generated-sources
+    │   └───annotations
+    ├───generated-test-sources
+    │   └───test-annotations
+    └───test-classes
+        ├───getjson
+        ├───Jsons
+        └───test
+
 ```
 
 ---
