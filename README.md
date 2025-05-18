@@ -193,27 +193,28 @@ mv target/ProjetoPA-1.0.0.jar release/ProjetoPA-1.0.0.jar
 ```
 ProjetoPA/
 ├───.idea
-│   ├───codeStyles
-│   └───libraries
+│   ├───artifacts
+│   └───codeStyles
 ├───docs
 │   └───diagrams
 ├───lib
+├───out
+│   └───artifacts
+│       └───ProjetoPA_jar   <-- .jar atualizado
 ├───release
 ├───src
 │   ├───main
-│   │   ├───kotlin
-│   │   │   ├───getjson
-│   │   │   │   └───annotations
-│   │   │   ├───inference
-│   │   │   ├───model
-│   │   │   └───visitor
-│   │   └───resources
+│   │   └───kotlin
+│   │       ├───getjson
+│   │       │   └───annotations
+│   │       ├───inference
+│   │       ├───model
+│   │       └───visitor
 │   └───test
-│       ├───kotlin
-│       │   ├───getjson
-│       │   ├───Jsons
-│       │   └───test
-│       └───resources
+│       └───kotlin
+│           ├───getjson
+│           ├───Jsons
+│           └───test
 └───target
     ├───classes
     │   ├───getjson
@@ -226,13 +227,8 @@ ProjetoPA/
     │   └───annotations
     ├───generated-test-sources
     │   └───test-annotations
-    ├───maven-status
-    │   └───maven-compiler-plugin
-    │       └───compile
-    │           └───default-compile
     └───test-classes
         ├───getjson
-        ├───Jsons
         ├───META-INF
         └───test
 
