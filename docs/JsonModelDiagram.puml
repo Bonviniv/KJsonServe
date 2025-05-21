@@ -2,23 +2,25 @@
 
 ' Definição da hierarquia JSON
 abstract class JsonValue {
-  + serialize(): String
-  + accept(v: JsonVisitor)
+  + {abstract} serialize(): String
+  + {abstract} accept(v: JsonVisitor)
 }
 
-class JsonObject {
+class JsonObject << (D,orchid) data >> {
   - properties: MutableMap<String, JsonValue>
   + get(key: String): JsonValue?
   + set(key: String, value: JsonValue)
   + size(): Int
-  + keys(): Set<String>
   + values(): Collection<JsonValue>
+  + keys(): Set<String>
+  - getKeys(): Set<String>
+  + times(other: JsonObject): JsonObject
   + filter(predicate: (String, JsonValue) -> Boolean): JsonObject
   + serialize(): String
-  + accept(v: JsonVisitor)
+  + accept(visitor: JsonVisitor)
 }
 
-class JsonArray {
+class JsonArray << (D,orchid) data >> {
   - elements: MutableList<JsonValue>
   + add(value: JsonValue)
   + get(index: Int): JsonValue
@@ -28,40 +30,39 @@ class JsonArray {
   + filter(predicate: (JsonValue) -> Boolean): JsonArray
   + map(transform: (JsonValue) -> JsonValue): JsonArray
   + serialize(): String
-  + accept(v: JsonVisitor)
+  + accept(visitor: JsonVisitor)
 }
 
-class JsonString {
+class JsonString << (D,orchid) data >> {
   - value: String
   + serialize(): String
-  + accept(v: JsonVisitor)
+  + accept(visitor: JsonVisitor)
 }
 
-class JsonNumber {
+class JsonNumber << (D,orchid) data >> {
   - value: Number
   + serialize(): String
-  + accept(v: JsonVisitor)
+  + accept(visitor: JsonVisitor)
 }
 
-class JsonBoolean {
+class JsonBoolean << (D,orchid) data >> {
   - value: Boolean
   + serialize(): String
-  + accept(v: JsonVisitor)
+  + accept(visitor: JsonVisitor)
 }
 
-class JsonNull {
-  + INSTANCE: JsonNull
+object JsonNull {
   + serialize(): String
-  + accept(v: JsonVisitor)
+  + accept(visitor: JsonVisitor)
 }
 
 ' Visitor interface
 interface JsonVisitor {
-  + visitObject(jsonObject: JsonObject)
-  + visitArray(jsonArray: JsonArray)
-  + visitString(jsonString: JsonString)
-  + visitNumber(jsonNumber: JsonNumber)
-  + visitBoolean(jsonBoolean: JsonBoolean)
+  + visitObject(obj: JsonObject)
+  + visitArray(array: JsonArray)
+  + visitString(str: JsonString)
+  + visitNumber(num: JsonNumber)
+  + visitBoolean(bool: JsonBoolean)
   + visitNull(jsonNull: JsonNull)
 }
 
@@ -69,26 +70,40 @@ interface JsonVisitor {
 class ValidatorVisitor {
   - valid: Boolean
   + isValid(): Boolean
-  + reset()
-  + visitObject(jsonObject: JsonObject)
-  + visitArray(jsonArray: JsonArray)
-  + visitString(jsonString: JsonString)
-  + visitNumber(jsonNumber: JsonNumber)
-  + visitBoolean(jsonBoolean: JsonBoolean)
+  + visitObject(obj: JsonObject)
+  + visitArray(array: JsonArray)
+  + visitString(str: JsonString)
+  + visitNumber(num: JsonNumber)
+  + visitBoolean(bool: JsonBoolean)
   + visitNull(jsonNull: JsonNull)
 }
 
 class ArrayHomogeneityVisitor {
+  - currentType: Class<*>
   - homogeneous: Boolean
   + isHomogeneous(): Boolean
-  + reset()
-  + visitObject(jsonObject: JsonObject)
-  + visitArray(jsonArray: JsonArray)
-  + visitString(jsonString: JsonString)
-  + visitNumber(jsonNumber: JsonNumber)
-  + visitBoolean(jsonBoolean: JsonBoolean)
+  + visitArray(array: JsonArray)
+  + visitObject(obj: JsonObject)
+  + visitString(str: JsonString)
+  + visitNumber(num: JsonNumber)
+  + visitBoolean(bool: JsonBoolean)
   + visitNull(jsonNull: JsonNull)
 }
+
+' GetJson Framework
+class GetJson {
+  + {static} get(url: String): JsonValue
+  + {static} get(url: String, params: Map<String, String>): JsonValue
+}
+
+class JsonInfer {
+  + {static} inferType(json: JsonValue): String
+}
+
+' Annotations
+annotation Mapping
+annotation Param
+annotation Path
 
 ' Relações de herança
 JsonValue <|-- JsonObject
@@ -98,7 +113,7 @@ JsonValue <|-- JsonNumber
 JsonValue <|-- JsonBoolean
 JsonValue <|-- JsonNull
 
-' JsonVisitor associações (uso de dependency):
+' JsonVisitor associações (uso de dependency)
 JsonVisitor ..> JsonObject
 JsonVisitor ..> JsonArray
 JsonVisitor ..> JsonString
@@ -109,5 +124,9 @@ JsonVisitor ..> JsonNull
 ' Visitors implementam JsonVisitor
 ValidatorVisitor ..|> JsonVisitor
 ArrayHomogeneityVisitor ..|> JsonVisitor
+
+' GetJson Framework dependencies
+GetJson ..> JsonValue
+JsonInfer ..> JsonValue
 
 @enduml
