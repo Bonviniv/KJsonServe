@@ -1,54 +1,54 @@
-# Projeto de Programação Avançada — JSON & GetJson Framework
+# Advanced Programming Project — JSON & GetJson Framework
 
-**Mestrado em Engenharia Informática – ISCTE 2024/2025**  
-Autores: **Vítor Barbosa (105248)** e **Paulo Francisco Pinto (128962)**
-
----
-
-## 📦 Visão Geral
-
-Este projeto implementa:
-
-- Uma **biblioteca JSON em Kotlin**, que permite representar, manipular e serializar estruturas JSON inteiramente em memória.
-- Um **microframework HTTP (`GetJson`)**, que expõe endpoints `GET` com retorno automático em JSON a partir de métodos Kotlin, usando anotações personalizadas.
+**Master's in Informatics Engineering – ISCTE 2024/2025**  
+Authors: **Vítor Barbosa (105248)** and **Paulo Francisco Pinto (128962)**
 
 ---
 
-## ✅ Módulo 1 — Biblioteca JSON (Modelo em Memória)
+## 📦 Overview
 
-- Hierarquia de tipos: `JsonObject`, `JsonArray`, `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`.
-- Suporte a serialização para o formato JSON padrão (`serialize()`).
-- Operações funcionais:
-  - `filter`, `map`, `times` (interseção de objetos)
-- Validações via padrão Visitor:
-  - `ValidatorVisitor`: verifica se as chaves dos objetos são válidas.
-  - `ArrayHomogeneityVisitor`: verifica se os elementos de um array são do mesmo tipo (ignorando `null`).
+This project implements:
+
+- A **JSON library in Kotlin**, allowing the representation, manipulation, and serialization of JSON structures entirely in memory.
+- An **HTTP microframework (`GetJson`)**, which exposes `GET` endpoints that automatically return JSON from Kotlin methods using custom annotations.
 
 ---
 
-## 🧠 Módulo 2 — Inferência com Reflexão
+## ✅ Module 1 — JSON Library (In-Memory Model)
 
-- Função `JsonInfer.infer(value: Any?)`:
-  - Converte automaticamente objetos Kotlin em `JsonValue`.
-- Suporta:
-  - Tipos primitivos (`Int`, `Double`, `Boolean`, `String`)
+- Type hierarchy: `JsonObject`, `JsonArray`, `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`.
+- Support for serialization to standard JSON format (`serialize()`).
+- Functional operations:
+  - `filter`, `map`, `times` (object intersection)
+- Validations via Visitor pattern:
+  - `ValidatorVisitor`: checks if object keys are valid.
+  - `ArrayHomogeneityVisitor`: checks if array elements are of the same type (ignoring `null`).
+
+---
+
+## 🧠 Module 2 — Inference with Reflection
+
+- Function `JsonInfer.infer(value: Any?)`:
+  - Automatically converts Kotlin objects into `JsonValue`.
+- Supports:
+  - Primitive types (`Int`, `Double`, `Boolean`, `String`)
   - `List<T>`, `Map<String, T>`
   - `Enum`, `null`
-  - `data class` com campos de tipos suportados
+  - `data class` with fields of supported types
 
 ---
 
-## 🌐 Módulo 3 — Microframework HTTP `GetJson`
+## 🌐 Module 3 — HTTP Microframework `GetJson`
 
-- Framework simples para criação de endpoints `GET` com anotações:
-  - `@Mapping("rota")`: define o caminho da rota
-  - `@Path`: parâmetros dinâmicos no caminho (e.g. `/user/{id}`)
-  - `@Param`: parâmetros da query string (`?nome=joao`)
-- Conversão automática da resposta para JSON usando `JsonInfer`.
+- Simple framework for creating `GET` endpoints with annotations:
+  - `@Mapping("route")`: defines the route path
+  - `@Path`: dynamic path parameters (e.g. `/user/{id}`)
+  - `@Param`: query string parameters (`?name=joao`)
+- Automatic conversion of response to JSON using `JsonInfer`.
 
 ---
 
-## ⚙️ Instalação via Maven
+## ⚙️ Installation via Maven
 
 ```xml
 <properties>
@@ -79,20 +79,21 @@ Este projeto implementa:
 
 ---
 
-## 🚀 Exemplos de Utilização
+## 🚀  Usage Examples
 
-### 1. Criação Manual de JSON
+### 1. Manual JSON Creation
 ```kotlin
 val obj = JsonObject().apply {
-    set("nome", JsonString("Alice"))
-    set("idade", JsonNumber(30.0))
-    set("ativo", JsonBoolean(true))
+    set("name", JsonString("Alice"))
+    set("age", JsonNumber(30.0))
+    set("active", JsonBoolean(true))
 }
 println(obj.serialize())
-// {"nome":"Alice","idade":30,"ativo":true}
+// {"name":"Alice","age":30,"active":true}
+
 ```
 
-### 2. Filtrar e Mapear Arrays
+### 2. Filtering and Mapping Arrays
 ```kotlin
 val arr = JsonArray().apply {
     add(JsonNumber(1.0))
@@ -100,36 +101,39 @@ val arr = JsonArray().apply {
     add(JsonNumber(3.0))
 }
 
-val pares = arr.filter { (it as JsonNumber).value.toDouble() % 2 == 0.0 }
-println(pares.serialize()) // [2]
+val evens = arr.filter { (it as JsonNumber).value.toDouble() % 2 == 0.0 }
+println(evens.serialize()) // [2]
 
-val duplicado = arr.map {
+val doubled = arr.map {
     if (it is JsonNumber) JsonNumber((it.value as Number).toDouble() * 2) else it
 }
-println(duplicado.serialize()) // [2, 4, 6]
+println(doubled.serialize()) // [2, 4, 6]
+
 ```
 
-### 3. Uso de Visitors
+### 3. Using Visitors
 ```kotlin
 val validator = ValidatorVisitor()
 obj.accept(validator)
-println("É válido? ${validator.isValid()}")
+println("Is valid? ${validator.isValid()}")
 
 val homog = ArrayHomogeneityVisitor()
 arr.accept(homog)
-println("É homogéneo? ${homog.isHomogeneous()}")
+println("Is homogeneous? ${homog.isHomogeneous()}")
+
 ```
 
-### 4. Inferência com Kotlin
+### 4. Inference with Kotlin
 ```kotlin
 data class Person(val name: String, val age: Int)
 
 val json = JsonInfer.infer(Person("João", 25))
 println(json.serialize())
 // {"name":"João","age":25}
+
 ```
 
-### 5. Servidor HTTP com GetJson
+### 5. HTTP Server with GetJson
 ```kotlin
 @Mapping("api")
 class Controller {
@@ -144,14 +148,15 @@ class Controller {
         mapOf(text to text.repeat(n))
 }
 
-// Iniciar servidor
+// Start server
 val app = GetJson(Controller::class)
 app.start(8080)
+
 ```
 
 ---
 
-## 📚 Referência da API
+## 📚 API Reference
 
 ### JsonValue
 - `serialize()`, `accept(visitor)`
@@ -171,7 +176,7 @@ app.start(8080)
 
 ---
 
-## ✅ Testes Automatizados
+## ✅ Automated Tests
 
 ```bash
 mvn test
@@ -179,7 +184,7 @@ mvn test
 
 ---
 
-## 📦 Compilar JAR
+## 📦 Build JAR
 
 ```bash
 mvn clean package
@@ -188,7 +193,7 @@ mv target/ProjetoPA-1.0.0.jar release/ProjetoPA-1.0.0.jar
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 ProjetoPA/
@@ -200,7 +205,7 @@ ProjetoPA/
 ├───lib
 ├───out
 │   └───artifacts
-│       └───ProjetoPA_jar   <-- .jar atualizado
+│       └───ProjetoPA_jar   <-- updated .jar
 ├───release
 ├───src
 │   ├───main
@@ -232,14 +237,16 @@ ProjetoPA/
         ├───META-INF
         └───test
 
+
 ```
 
 ---
 
-## 👥 Autores
+## 👥 Authors
 
 - **Vítor Barbosa** (105248)
 - **Paulo Francisco Pinto** (128962)
 
-Projeto realizado no âmbito da unidade curricular **Programação Avançada**,  
-**Mestrado em Engenharia Informática — ISCTE, 2024/2025**
+Project carried out for the **Advanced Programming** course,
+**Master's in Informatics Engineering — ISCTE, 2024/2025**
+
